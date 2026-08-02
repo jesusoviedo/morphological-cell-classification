@@ -391,3 +391,34 @@ def reconstruccion_morfologica(marcador, mascara):
             break
 
     return (reconstruida * 255).astype(np.uint8)
+
+
+def crear_elemento_estructurante(forma="cruz", tamano=3):
+    """Crea un elemento estructurante para operaciones morfológicas.
+
+    Args:
+        forma (str, optional): Forma del elemento estructurante. Debe
+            ser 'cruz', 'rectangulo' o 'elipse'. Por defecto es
+            'cruz'.
+        tamano (int, optional): Tamaño (ancho y alto) del elemento
+            estructurante, en píxeles. Por defecto es 3.
+
+    Returns:
+        numpy.ndarray: Elemento estructurante generado.
+
+    Raises:
+        ValueError: Si la forma indicada no es una de las soportadas.
+    """
+    formas_soportadas = {
+        "cruz": cv2.MORPH_CROSS,
+        "rectangulo": cv2.MORPH_RECT,
+        "elipse": cv2.MORPH_ELLIPSE,
+    }
+
+    if forma not in formas_soportadas:
+        raise ValueError(
+            f"Forma '{forma}' no soportada. Debe ser una de: "
+            f"{list(formas_soportadas.keys())}"
+        )
+
+    return cv2.getStructuringElement(formas_soportadas[forma], (tamano, tamano))
