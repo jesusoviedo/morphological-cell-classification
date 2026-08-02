@@ -8,6 +8,8 @@ desde Google Drive y almacenarla localmente en la carpeta 'img'.
 import os
 import requests
 import cv2
+import numpy as np
+from scipy.ndimage import binary_dilation
 import matplotlib.pyplot as plt
 
 # Constantes para la descarga de la imagen base
@@ -348,3 +350,44 @@ def invertir_imagen(imagen):
         numpy.ndarray: Imagen con los valores invertidos.
     """
     return cv2.bitwise_not(imagen)
+
+
+def reconstruccion_morfologica(marcador, mascara):
+    """Realiza la reconstrucción morfológica binaria por dilatación.
+
+    Dilata repetidamente el marcador (elemento estructurante 3x3, de
+    8-conectividad) intersecándolo con la máscara mediante AND lógico,
+    hasta que la imagen resultante deja de cambiar entre iteraciones.
+
+    Args:
+        marcador (numpy.ndarray): Imagen binaria (0/255) que sirve
+            como marcador, es decir, el punto de partida de la
+            dilatación.
+        mascara (numpy.ndarray): Imagen binaria (0/255) que sirve como
+            máscara, es decir, el límite que no puede superar la
+            dilatación.
+
+    Returns:
+        numpy.ndarray: Imagen binaria (0/255) reconstruida.
+
+    Raises:
+        ValueError: Si las dimensiones del marcador y la máscara no
+            coinciden.
+    """
+    if marcador.shape != mascara.shape:
+        raise ValueError("Las dimensiones del marcador y la máscara deben ser iguales.")
+
+    marcador_bool = marcador.astype(bool)
+    mascara_bool = mascara.astype(bool)
+
+    reconstruida = marcador_bool.copy()
+
+    while True:
+        anterior = reconstruida.copy()
+        dilatada = binary_dilation(reconstruida, structure=np.ones((3, 3)))
+        reconstruida = dilatada & mascara_bool
+
+        if np.array_equal(reconstruida, anterior):
+            break
+
+    return (reconstruida * 255).astype(np.uint8)
