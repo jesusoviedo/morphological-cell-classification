@@ -265,3 +265,86 @@ def graficar_comparacion(imagen_entrada, imagen_salida, prefijo, titulo_entrada=
     plt.show()
 
     return ruta_destino
+
+
+def operacion_and(imagen_a, imagen_b):
+    """Aplica la operación lógica AND entre dos imágenes binarias.
+
+    Args:
+        imagen_a (numpy.ndarray): Primera imagen binaria.
+        imagen_b (numpy.ndarray): Segunda imagen binaria.
+
+    Returns:
+        numpy.ndarray: Resultado de aplicar AND píxel a píxel.
+    """
+    return cv2.bitwise_and(imagen_a, imagen_b)
+
+
+def operacion_or(imagen_a, imagen_b):
+    """Aplica la operación lógica OR entre dos imágenes binarias.
+
+    Args:
+        imagen_a (numpy.ndarray): Primera imagen binaria.
+        imagen_b (numpy.ndarray): Segunda imagen binaria.
+
+    Returns:
+        numpy.ndarray: Resultado de aplicar OR píxel a píxel.
+    """
+    return cv2.bitwise_or(imagen_a, imagen_b)
+
+
+def operacion_xor(imagen_a, imagen_b):
+    """Aplica la operación lógica XOR entre dos imágenes binarias.
+
+    Args:
+        imagen_a (numpy.ndarray): Primera imagen binaria.
+        imagen_b (numpy.ndarray): Segunda imagen binaria.
+
+    Returns:
+        numpy.ndarray: Resultado de aplicar XOR píxel a píxel.
+    """
+    return cv2.bitwise_xor(imagen_a, imagen_b)
+
+
+def operacion_nand(imagen_a, imagen_b):
+    """Aplica la operación lógica NAND entre dos imágenes binarias.
+
+    Equivale a invertir el resultado de aplicar AND entre ambas
+    imágenes.
+
+    Args:
+        imagen_a (numpy.ndarray): Primera imagen binaria.
+        imagen_b (numpy.ndarray): Segunda imagen binaria.
+
+    Returns:
+        numpy.ndarray: Resultado de aplicar NAND píxel a píxel.
+    """
+    return cv2.bitwise_not(cv2.bitwise_and(imagen_a, imagen_b))
+
+
+def operacion_nor(imagen_a, imagen_b):
+    """Aplica la operación lógica NOR entre dos imágenes binarias.
+
+    Equivale a invertir el resultado de aplicar OR entre ambas
+    imágenes.
+
+    Args:
+        imagen_a (numpy.ndarray): Primera imagen binaria.
+        imagen_b (numpy.ndarray): Segunda imagen binaria.
+
+    Returns:
+        numpy.ndarray: Resultado de aplicar NOR píxel a píxel.
+    """
+    return cv2.bitwise_not(cv2.bitwise_or(imagen_a, imagen_b))
+
+
+def invertir_imagen(imagen):
+    """Invierte los valores de una imagen binaria o en escala de grises.
+
+    Args:
+        imagen (numpy.ndarray): Imagen a invertir.
+
+    Returns:
+        numpy.ndarray: Imagen con los valores invertidos.
+    """
+    return cv2.bitwise_not(imagen)
