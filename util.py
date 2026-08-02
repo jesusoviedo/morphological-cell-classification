@@ -148,7 +148,63 @@ def cargar_imagen_binaria(ruta_imagen, umbral=127, valor_maximo=255):
     return binarizar_imagen(imagen_gris, umbral, valor_maximo)
 
 
-if __name__ == "__main__":
+def guardar_imagen(imagen, nombre_destino, carpeta=CARPETA_IMG):
+    """Guarda una imagen en disco dentro de una carpeta local.
 
-    ruta_guardada = descargar_imagen()
-    print(f"Imagen guardada en: {ruta_guardada}")
+    Si la carpeta indicada no existe, la crea antes de guardar la
+    imagen. Pensada para almacenar los resultados intermedios de cada
+    punto (imagen A, B, C, etc.) en la misma carpeta donde se guardó
+    la imagen base.
+
+    Args:
+        imagen (numpy.ndarray): Imagen a guardar.
+        nombre_destino (str): Nombre del archivo de salida, incluyendo
+            extensión (por ejemplo 'imagen_a.png').
+        carpeta (str, optional): Carpeta donde se guardará la imagen.
+            Por defecto es 'img'.
+
+    Returns:
+        str: Ruta completa donde se guardó la imagen.
+
+    Raises:
+        IOError: Si OpenCV no pudo escribir la imagen en la ruta
+            indicada (por ejemplo, por una extensión no soportada).
+    """
+    if not os.path.exists(carpeta):
+        os.makedirs(carpeta)
+
+    ruta_destino = os.path.join(carpeta, nombre_destino)
+
+    if not cv2.imwrite(ruta_destino, imagen):
+        raise IOError(f"No se pudo guardar la imagen en: {ruta_destino}")
+
+    return ruta_destino
+
+
+def cargar_imagen_resultado(nombre_archivo, carpeta=CARPETA_IMG):
+    """Carga una imagen resultado previamente guardada en disco.
+
+    Pensada para que un punto lea el resultado guardado por un punto
+    anterior (por ejemplo, que el Punto 2 cargue la imagen A generada
+    por el Punto 1) sin necesidad de binarizarla nuevamente.
+
+    Args:
+        nombre_archivo (str): Nombre del archivo a cargar, incluyendo
+            extensión (por ejemplo 'imagen_a.png').
+        carpeta (str, optional): Carpeta donde buscar el archivo. Por
+            defecto es 'img'.
+
+    Returns:
+        numpy.ndarray: Imagen cargada en escala de grises.
+
+    Raises:
+        FileNotFoundError: Si no se pudo leer la imagen desde la ruta
+            indicada.
+    """
+    ruta_origen = os.path.join(carpeta, nombre_archivo)
+    imagen = cv2.imread(ruta_origen, cv2.IMREAD_GRAYSCALE)
+
+    if imagen is None:
+        raise FileNotFoundError(f"No se pudo leer la imagen: {ruta_origen}")
+
+    return imagen
