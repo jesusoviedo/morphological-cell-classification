@@ -1,0 +1,8 @@
+name: trabajo_final
+channels:
+  - defaults
+dependencies:
+  - python=3.14
+  - matplotlib
+  - opencv
+  - spyder
