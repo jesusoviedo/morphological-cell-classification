@@ -105,16 +105,25 @@ def binarizar_imagen(imagen, umbral=127, valor_maximo=255):
     Por defecto utiliza un umbral fijo de 127. Si se pasa umbral=None, el
     umbral se calcula automáticamente mediante el método de Otsu.
 
+    Después de umbralizar, se garantiza que el objeto de interés (que
+    se asume minoritario en cantidad de píxeles frente al fondo)
+    quede codificado en valor_maximo, invirtiendo el resultado si
+    fuera necesario. Esto es indispensable en imágenes como la de este
+    trabajo, donde las células son oscuras sobre un fondo claro: al
+    umbralizar con THRESH_BINARY, el fondo (mayoritario) quedaría en
+    valor_maximo si no se corrigiera.
+
     Args:
         imagen (numpy.ndarray): Imagen en escala de grises a binarizar.
         umbral (int, optional): Valor de umbral fijo a utilizar. Si es
             None, el umbral se calcula automáticamente con el método
             de Otsu. Por defecto es 127.
         valor_maximo (int, optional): Valor asignado a los píxeles que
-            superan el umbral. Por defecto es 255.
+            representan al objeto de interés. Por defecto es 255.
 
     Returns:
-        numpy.ndarray: Imagen binaria resultante.
+        numpy.ndarray: Imagen binaria resultante, con el objeto de
+        interés en valor_maximo y el fondo en 0.
     """
     if umbral is None:
         _, imagen_binaria = cv2.threshold(imagen, 
@@ -126,6 +135,12 @@ def binarizar_imagen(imagen, umbral=127, valor_maximo=255):
                                           umbral, 
                                           valor_maximo, 
                                           cv2.THRESH_BINARY)    
+
+    cantidad_encendidos = np.count_nonzero(imagen_binaria)
+    cantidad_apagados = imagen_binaria.size - cantidad_encendidos
+
+    if cantidad_encendidos > cantidad_apagados:
+        imagen_binaria = cv2.bitwise_not(imagen_binaria)
 
     return imagen_binaria
 
