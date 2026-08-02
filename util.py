@@ -8,6 +8,7 @@ desde Google Drive y almacenarla localmente en la carpeta 'img'.
 import os
 import requests
 import cv2
+import matplotlib.pyplot as plt
 
 # Constantes para la descarga de la imagen base
 ID_IMAGEN_BASE = "1zjP2KHLyJjB0iyuquUZY3tWyorw-ysU3"
@@ -208,3 +209,59 @@ def cargar_imagen_resultado(nombre_archivo, carpeta=CARPETA_IMG):
         raise FileNotFoundError(f"No se pudo leer la imagen: {ruta_origen}")
 
     return imagen
+
+
+def graficar_comparacion(imagen_entrada, imagen_salida, prefijo, titulo_entrada="Entrada",
+                          titulo_salida="Salida", titulo_general=None, carpeta=CARPETA_IMG):
+    """Muestra y guarda una imagen de entrada y una de salida lado a lado.
+
+    Arma una figura de matplotlib con dos paneles (1x2) para comparar
+    visualmente el resultado de un punto contra la imagen que lo
+    originó, en escala de grises. La figura se guarda siempre en disco
+    antes de mostrarse, usando el prefijo indicado para nombrar el
+    archivo.
+
+    Args:
+        imagen_entrada (numpy.ndarray): Imagen de entrada del punto.
+        imagen_salida (numpy.ndarray): Imagen de salida generada por
+            el punto.
+        prefijo (str): Prefijo utilizado para nombrar el archivo
+            guardado (por ejemplo 'punto1' genera
+            'punto1_comparacion.png').
+        titulo_entrada (str, optional): Título del panel izquierdo.
+            Por defecto es 'Entrada'.
+        titulo_salida (str, optional): Título del panel derecho. Por
+            defecto es 'Salida'.
+        titulo_general (str, optional): Título general de la figura,
+            mostrado arriba de ambos paneles. Si es None, no se
+            muestra título general. Por defecto es None.
+        carpeta (str, optional): Carpeta donde se guardará la figura.
+            Por defecto es 'img'.
+
+    Returns:
+        str: Ruta completa donde se guardó la figura.
+    """
+    if not os.path.exists(carpeta):
+        os.makedirs(carpeta)
+
+    figura, ejes = plt.subplots(1, 2, figsize=(10, 5))
+
+    ejes[0].imshow(imagen_entrada, cmap="gray")
+    ejes[0].set_title(titulo_entrada)
+    ejes[0].axis("off")
+
+    ejes[1].imshow(imagen_salida, cmap="gray")
+    ejes[1].set_title(titulo_salida)
+    ejes[1].axis("off")
+
+    if titulo_general is not None:
+        figura.suptitle(titulo_general)
+
+    plt.tight_layout()
+
+    ruta_destino = os.path.join(carpeta, f"{prefijo}_comparacion.png")
+    figura.savefig(ruta_destino)
+
+    plt.show()
+
+    return ruta_destino
