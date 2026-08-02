@@ -17,11 +17,12 @@ ID_IMAGEN_BASE = "1zjP2KHLyJjB0iyuquUZY3tWyorw-ysU3"
 NOMBRE_IMAGEN = "5ab3_0Artificial.bmp"
 CARPETA_IMG = "img"
 
-def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN):
+def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN, carpeta=CARPETA_IMG):
     """Descarga un archivo desde Google Drive dado su ID.
 
-    Construye la URL de descarga directa a partir del ID del archivo
-    de Google Drive y descarga su contenido en memoria.
+    Si el archivo ya existe en la carpeta de destino, no vuelve a
+    descargarlo. Construye la URL de descarga directa a partir del ID
+    del archivo de Google Drive y descarga su contenido en memoria.
 
     Args:
         id_archivo (str, optional): ID del archivo en Google Drive,
@@ -29,14 +30,22 @@ def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN):
             '/view'). Por defecto es ID_IMAGEN_BASE.
         nombre_destino (str, optional): Nombre con el que se guardará
             el archivo descargado. Por defecto es NOMBRE_IMAGEN.
+        carpeta (str, optional): Carpeta donde se guardará el archivo.
+            Por defecto es 'img'.
 
     Returns:
-        str: Ruta completa donde se guardó la imagen descargada.
+        str: Ruta completa donde está guardada la imagen (recién
+        descargada, o ya existente de una ejecución anterior).
 
     Raises:
         requests.exceptions.RequestException: Si ocurre un error de red
             al intentar descargar el archivo.
     """
+    ruta_destino = os.path.join(carpeta, nombre_destino)
+
+    if os.path.exists(ruta_destino):
+        return ruta_destino
+
     url_descarga = f"https://drive.google.com/uc?export=download&id={id_archivo}"
 
     sesion = requests.Session()
@@ -60,8 +69,8 @@ def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN):
 
     respuesta.raise_for_status()
 
-    ruta_destino = guardar_en_carpeta_img(respuesta.content, nombre_destino)
-    return ruta_destino
+    ruta_guardada = guardar_en_carpeta_img(respuesta.content, nombre_destino, carpeta)
+    return ruta_guardada
 
 
 def guardar_en_carpeta_img(contenido, nombre_destino, carpeta=CARPETA_IMG):
