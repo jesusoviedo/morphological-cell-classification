@@ -11,6 +11,8 @@ import requests
 # Constantes para la descarga de la imagen base
 ID_IMAGEN_BASE = "1zjP2KHLyJjB0iyuquUZY3tWyorw-ysU3"
 NOMBRE_IMAGEN = "5ab3_0Artificial.bmp"
+CARPETA_IMG = "img"
+
 
 def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN):
     """Descarga un archivo desde Google Drive dado su ID.
@@ -19,10 +21,11 @@ def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN):
     de Google Drive y descarga su contenido en memoria.
 
     Args:
-        id_archivo (str): ID del archivo en Google Drive, extraído de
-            la URL para compartir (parte entre '/d/' y '/view').
-        nombre_destino (str): Nombre con el que se guardará el archivo
-            descargado (por ejemplo 'celulas.png').
+        id_archivo (str, optional): ID del archivo en Google Drive,
+            extraído de la URL para compartir (parte entre '/d/' y
+            '/view'). Por defecto es ID_IMAGEN_BASE.
+        nombre_destino (str, optional): Nombre con el que se guardará
+            el archivo descargado. Por defecto es NOMBRE_IMAGEN.
 
     Returns:
         str: Ruta completa donde se guardó la imagen descargada.
@@ -58,7 +61,7 @@ def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN):
     return ruta_destino
 
 
-def guardar_en_carpeta_img(contenido, nombre_destino, carpeta="img"):
+def guardar_en_carpeta_img(contenido, nombre_destino, carpeta=CARPETA_IMG):
     """Guarda contenido binario dentro de una carpeta local.
 
     Si la carpeta indicada no existe, la crea antes de guardar el
@@ -67,8 +70,8 @@ def guardar_en_carpeta_img(contenido, nombre_destino, carpeta="img"):
     Args:
         contenido (bytes): Contenido binario a escribir en el archivo.
         nombre_destino (str): Nombre con el que se guardará el archivo.
-        carpeta (str): Carpeta donde se almacenará el archivo. Por
-            defecto es 'img'.
+        carpeta (str, optional): Carpeta donde se almacenará el
+            archivo. Por defecto es 'img'.
 
     Returns:
         str: Ruta completa del archivo guardado.
