@@ -10,6 +10,7 @@ Enunciado:
 
 # Importar funciones auxiliares
 from util import NOMBRE_IMAGEN
+from util import NOMBRE_IMAGEN_A
 from util import descargar_imagen
 from util import cargar_imagen_binaria
 from util import operacion_and
@@ -116,7 +117,7 @@ def main():
     ruta_imagen_con_operacion_xor = guardar_imagen(imagen_con_operacion_xor, f"{PREFIJO}_imagen_con_operacion_xor.png")
     print(f"Imagen con operación XOR guardada en: {ruta_imagen_con_operacion_xor}")
 
-    ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a.png")
+    ruta_imagen_a = guardar_imagen(imagen_a, NOMBRE_IMAGEN_A)
     print(f"Imagen A guardada en: {ruta_imagen_a}")
 
     # Graficar todas las imágenes generadas
@@ -124,7 +125,7 @@ def main():
         imagen_original, 
         imagen_mascara, 
         imagen_marcador, 
-        image_con_objeto_borde, 
+        image_con_objeto_borde,
         imagen_con_operacion_xor, 
         imagen_a]
     lista_titulos = [
