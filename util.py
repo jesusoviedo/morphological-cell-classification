@@ -17,6 +17,15 @@ ID_IMAGEN_BASE = "1zjP2KHLyJjB0iyuquUZY3tWyorw-ysU3"
 NOMBRE_IMAGEN = "5ab3_0Artificial.bmp"
 CARPETA_IMG = "img"
 
+# Constantes para los nombres de las imágenes generadas en cada punto
+NOMBRE_IMAGEN_A = "imagen_a.png"
+NOMBRE_IMAGEN_B = "imagen_b.png"
+NOMBRE_IMAGEN_C = "imagen_c.png"
+NOMBRE_IMAGEN_D = "imagen_d.png"
+NOMBRE_IMAGEN_E = "imagen_e.png"
+NOMBRE_IMAGEN_F = "imagen_f.png"
+NOMBRE_IMAGEN_G = "imagen_g.png"
+
 def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN, carpeta=CARPETA_IMG):
     """Descarga un archivo desde Google Drive dado su ID.
 
