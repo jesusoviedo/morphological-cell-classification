@@ -140,7 +140,7 @@ def binarizar_imagen(imagen, umbral=127, valor_maximo=255):
     cantidad_apagados = imagen_binaria.size - cantidad_encendidos
 
     if cantidad_encendidos > cantidad_apagados:
-        imagen_binaria = cv2.bitwise_not(imagen_binaria)
+        imagen_binaria = invertir_imagen(imagen_binaria)
 
     return imagen_binaria
 
@@ -237,55 +237,75 @@ def cargar_imagen_resultado(nombre_archivo, carpeta=CARPETA_IMG):
     return imagen
 
 
-def graficar_comparacion(imagen_entrada, imagen_salida, prefijo, titulo_entrada="Entrada",
-                          titulo_salida="Salida", titulo_general=None, carpeta=CARPETA_IMG):
-    """Muestra y guarda una imagen de entrada y una de salida lado a lado.
+def graficar_imagenes(imagenes, titulos, prefijo, filas=1, columnas=None,
+                       titulo_general=None, carpeta=CARPETA_IMG):
+    """Muestra y guarda una grilla de imágenes con matplotlib.
 
-    Arma una figura de matplotlib con dos paneles (1x2) para comparar
-    visualmente el resultado de un punto contra la imagen que lo
-    originó, en escala de grises. La figura se guarda siempre en disco
-    antes de mostrarse, usando el prefijo indicado para nombrar el
-    archivo.
+    Arma una figura con la cantidad de filas y columnas indicada,
+    mostrando cada imagen de la lista en su celda correspondiente, en
+    el mismo orden en que aparecen. Si la grilla tiene más celdas que
+    imágenes, las celdas sobrantes quedan vacías (sin ejes ni imagen)
+    en vez de lanzar un error.
 
     Args:
-        imagen_entrada (numpy.ndarray): Imagen de entrada del punto.
-        imagen_salida (numpy.ndarray): Imagen de salida generada por
-            el punto.
+        imagenes (list): Lista de imágenes (numpy.ndarray) a mostrar,
+            en el orden en que deben aparecer en la grilla.
+        titulos (list): Lista de títulos, uno por imagen, en el mismo
+            orden que imagenes.
         prefijo (str): Prefijo utilizado para nombrar el archivo
-            guardado (por ejemplo 'punto1' genera
-            'punto1_comparacion.png').
-        titulo_entrada (str, optional): Título del panel izquierdo.
-            Por defecto es 'Entrada'.
-        titulo_salida (str, optional): Título del panel derecho. Por
-            defecto es 'Salida'.
+            guardado (por ejemplo 'punto3' genera
+            'punto3_comparacion.png').
+        filas (int, optional): Cantidad de filas de la grilla. Por
+            defecto es 1.
+        columnas (int, optional): Cantidad de columnas de la grilla.
+            Si es None, se calcula automáticamente como la cantidad de
+            imágenes (es decir, todas en una sola fila). Por defecto
+            es None.
         titulo_general (str, optional): Título general de la figura,
-            mostrado arriba de ambos paneles. Si es None, no se
-            muestra título general. Por defecto es None.
+            mostrado arriba de toda la grilla. Si es None, no se
+            muestra. Por defecto es None.
         carpeta (str, optional): Carpeta donde se guardará la figura.
             Por defecto es 'img'.
 
     Returns:
         str: Ruta completa donde se guardó la figura.
+
+    Raises:
+        ValueError: Si la cantidad de imágenes no coincide con la
+            cantidad de títulos, o si la grilla (filas x columnas) no
+            alcanza para la cantidad de imágenes.
     """
+    if len(imagenes) != len(titulos):
+        raise ValueError(
+            "La cantidad de imágenes debe coincidir con la cantidad de títulos."
+        )
+
+    if columnas is None:
+        columnas = len(imagenes)
+
+    if filas * columnas < len(imagenes):
+        raise ValueError(
+            "La grilla (filas x columnas) no alcanza para la cantidad de imágenes."
+        )
+
     if not os.path.exists(carpeta):
         os.makedirs(carpeta)
 
-    figura, ejes = plt.subplots(1, 2, figsize=(10, 5))
+    figura, ejes = plt.subplots(filas, columnas, figsize=(5 * columnas, 5 * filas))
+    ejes = np.array(ejes).reshape(-1)
 
-    ejes[0].imshow(imagen_entrada, cmap="gray")
-    ejes[0].set_title(titulo_entrada)
-    ejes[0].axis("off")
-
-    ejes[1].imshow(imagen_salida, cmap="gray")
-    ejes[1].set_title(titulo_salida)
-    ejes[1].axis("off")
+    for indice, eje in enumerate(ejes):
+        if indice < len(imagenes):
+            eje.imshow(imagenes[indice], cmap="gray")
+            eje.set_title(titulos[indice])
+        eje.axis("off")
 
     if titulo_general is not None:
         figura.suptitle(titulo_general)
 
     plt.tight_layout()
 
-    ruta_destino = os.path.join(carpeta, f"{prefijo}_comparacion.png")
+    ruta_destino = os.path.join(carpeta, f"{prefijo}comparacion.png")
     figura.savefig(ruta_destino)
 
     plt.show()
