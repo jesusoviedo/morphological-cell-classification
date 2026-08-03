@@ -246,7 +246,7 @@ def cargar_imagen_resultado(nombre_archivo, carpeta=CARPETA_IMG, invertir=True):
     por el Punto 1). Los resultados se guardan en polaridad visual
     (fondo blanco, células negras, igual a como se ven en el informe),
     por lo que, por defecto, esta función invierte la imagen al
-    cargarla para devolverla en polaridad de cómputo (células en 255),
+    cargarla para devolverla en polaridad operativa (células en 255),
     lista para usarse en reconstrucción u operaciones lógicas.
 
     Args:
@@ -255,8 +255,8 @@ def cargar_imagen_resultado(nombre_archivo, carpeta=CARPETA_IMG, invertir=True):
         carpeta (str, optional): Carpeta donde buscar el archivo. Por
             defecto es 'img'.
         invertir (bool, optional): Si es True, invierte la imagen
-            cargada para pasar de polaridad visual a polaridad de
-            cómputo. Si es False, devuelve la imagen tal cual está
+            cargada para pasar de polaridad visual a polaridad
+            operativa. Si es False, devuelve la imagen tal cual está
             guardada en disco. Por defecto es True.
 
     Returns:
