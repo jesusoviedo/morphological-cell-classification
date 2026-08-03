@@ -100,13 +100,16 @@ def generar_imagen_a(imagen_mascara, imagen_marcador):
             la misma polaridad invertida.
  
     Returns:
-        tuple: Tupla (imagen_a, image_con_objeto_borde).
+        tuple: Tupla (imagen_a, imagen_con_operacion_xor,
+        image_con_objeto_borde).
         imagen_a (numpy.ndarray) es la imagen A final (0/255), ya
         invertida a la polaridad original (fondo blanco, células
-        negras). image_con_objeto_borde (numpy.ndarray) es la
-        reconstrucción de los objetos que tocan el borde, en
-        polaridad invertida (de cómputo, sin pasar por la inversión
-        final), pensada para mostrar el paso intermedio en el
+        negras). imagen_con_operacion_xor (numpy.ndarray) es el
+        resultado del XOR, todavía en polaridad invertida (de
+        cómputo), antes de la inversión final. image_con_objeto_borde
+        (numpy.ndarray) es la reconstrucción de los objetos que tocan
+        el borde, también en polaridad invertida. Estas dos últimas se
+        devuelven para poder mostrar los pasos intermedios en el
         informe.
     """
 
