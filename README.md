@@ -41,7 +41,14 @@ morphological-cell-classification/
 ├── LICENSE               # MIT
 ├── README.md
 ├── util.py               # funciones compartidas (descarga, binarización, etc.)
-├── img/                  # imagen base y resultados intermedios (se genera automáticamente)
+├── img/                  # se genera automáticamente al ejecutar los puntos
+│   ├── 5ab3_0Artificial.bmp   # imagen base descargada
+│   ├── imagen_a.png           # resultado canónico del punto 1
+│   ├── imagen_b.png           # resultado canónico del punto 2
+│   ├── ...                    # imagen_c.png, imagen_d.png, etc., a medida que se resuelven
+│   ├── punto1/                # imágenes intermedias del punto 1 (máscara, marcador, etc.)
+│   ├── punto2/                # imágenes intermedias del punto 2
+│   └── ...                    # una subcarpeta por cada punto resuelto
 ├── punto1_imagen_a.py    # células sin truncar en los bordes
 ├── punto2_imagen_b.py    # agujeros de células con citoplasma
 ├── punto3_imagen_c.py    # células agujereadas Tipo 2, 3 y 4
@@ -55,10 +62,33 @@ morphological-cell-classification/
 > Los archivos `puntoN_*.py` se van a ir agregando a medida que se resuelva
 > cada punto del enunciado.
 
+Los resultados que se encadenan entre puntos (`imagen_a.png`, `imagen_b.png`,
+etc.) se guardan directamente en `img/`, mientras que las imágenes
+intermedias de cada punto (máscara, marcador, pasos de la reconstrucción,
+etc.) se guardan en una subcarpeta `img/puntoN/` propia, para no mezclarlas
+todas sueltas.
+
 ## Uso
 
-*(Sección a completar a medida que se desarrollen los scripts de cada punto
-del enunciado.)*
+Cada punto del enunciado se ejecuta como un script independiente:
+
+```bash
+python punto1_imagen_a.py
+python punto2_imagen_b.py
+```
+
+Los puntos deben ejecutarse **en orden**, ya que cada uno depende del
+resultado canónico guardado por el anterior (por ejemplo, `punto2_imagen_b.py`
+carga `img/imagen_a.png`, generado por `punto1_imagen_a.py`). Si el archivo de
+entrada correspondiente no existe todavía, el script va a fallar con un
+`FileNotFoundError` indicando qué archivo falta.
+
+La imagen base (`5ab3_0Artificial.bmp`) se descarga automáticamente la
+primera vez que se ejecuta `punto1_imagen_a.py`; las ejecuciones siguientes
+reutilizan el archivo ya descargado en `img/`.
+
+*(Esta sección se va a seguir completando a medida que se agreguen los
+scripts de los puntos restantes.)*
 
 ## Autores
 
