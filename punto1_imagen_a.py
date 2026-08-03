@@ -120,19 +120,34 @@ def main():
 
     PREFIJO = "punto1"
 
+    # Obtener la imagen original y la máscara
     imagen_original, imagen_mascara = obtener_imagen_base()
-    guardar_imagen(imagen_original, f"{PREFIJO}_imagen_original.png")
-    guardar_imagen(imagen_mascara, f"{PREFIJO}_imagen_mascara.png")
 
+    ruta_imagen_original = guardar_imagen(imagen_original, f"{PREFIJO}_imagen_original.png")
+    print(f"Imagen original guardada en: {ruta_imagen_original}")
+
+    ruta_imagen_mascara = guardar_imagen(imagen_mascara, f"{PREFIJO}_imagen_mascara.png")
+    print(f"Imagen máscara guardada en: {ruta_imagen_mascara}")
+
+    # Crear el marcador de borde a partir de la imagen máscara
     imagen_marcador = crear_marcador_borde(imagen_mascara)
-    guardar_imagen(imagen_marcador, f"{PREFIJO}_imagen_marcador.png")
 
+    ruta_imagen_marcador = guardar_imagen(imagen_marcador, f"{PREFIJO}_imagen_marcador.png")
+    print(f"Imagen marcador guardada en: {ruta_imagen_marcador}")
+
+    # Generar la imagen A y la imagen con objetos de borde
     imagen_a, image_con_objeto_borde = generar_imagen_a(imagen_mascara, imagen_marcador)
-    guardar_imagen(image_con_objeto_borde, f"{PREFIJO}_image_con_objeto_borde.png")
-    guardar_imagen(imagen_a, "imagen_a.png")
 
+    ruta_image_con_objeto_borde = guardar_imagen(image_con_objeto_borde, f"{PREFIJO}_image_con_objeto_borde.png")
+    print(f"Imagen con objetos de borde guardada en: {ruta_image_con_objeto_borde}")
+
+    ruta_imagen_a = guardar_imagen(imagen_a, f"{PREFIJO}_imagen_a.png")
+    print(f"Imagen A guardada en: {ruta_imagen_a}")
+
+    # Graficar todas las imágenes generadas
     lista_imagenes = [imagen_original, imagen_mascara, imagen_marcador, image_con_objeto_borde,imagen_a]
     lista_titulos = ["Imagen Original", "Imagen Mascara", "Imagen Marcador", "Imagen con Objetos de Borde", "Imagen A"]
+
     graficar_imagenes(lista_imagenes, 
                       lista_titulos, 
                       prefijo=PREFIJO, 
