@@ -74,8 +74,8 @@ def generar_imagen_a(imagen_mascara, imagen_marcador):
         imagen_a (numpy.ndarray) es la imagen A final (0/255), ya
         invertida a la polaridad original (fondo blanco, células
         negras). imagen_con_operacion_xor (numpy.ndarray) es el
-        resultado del XOR, todavía en polaridad invertida (de
-        cómputo), antes de la inversión final. image_con_objeto_borde
+        resultado del XOR, todavía en polaridad invertida (operativa),
+        antes de la inversión final. image_con_objeto_borde
         (numpy.ndarray) es la reconstrucción de los objetos que tocan
         el borde, también en polaridad invertida. Estas dos últimas se
         devuelven para poder mostrar los pasos intermedios en el
