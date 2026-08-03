@@ -109,7 +109,7 @@ def main():
     print(f"Imagen marcador guardada en: {ruta_imagen_marcador}")
 
     # Generar la imagen A y la imagen con objetos de borde
-    imagen_a, imagen_con_operacion_xor,image_con_objeto_borde = generar_imagen_a(imagen_mascara, imagen_marcador)
+    imagen_a, imagen_con_operacion_xor, image_con_objeto_borde = generar_imagen_a(imagen_mascara, imagen_marcador)
 
     ruta_image_con_objeto_borde = guardar_imagen(image_con_objeto_borde, "image_con_objeto_borde.png", prefijo=PREFIJO)
     print(f"Imagen con objetos de borde guardada en: {ruta_image_con_objeto_borde}")
