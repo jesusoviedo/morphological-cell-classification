@@ -220,18 +220,26 @@ def guardar_imagen(imagen, nombre_destino, carpeta=CARPETA_IMG):
     return ruta_destino
 
 
-def cargar_imagen_resultado(nombre_archivo, carpeta=CARPETA_IMG):
+def cargar_imagen_resultado(nombre_archivo, carpeta=CARPETA_IMG, invertir=True):
     """Carga una imagen resultado previamente guardada en disco.
 
     Pensada para que un punto lea el resultado guardado por un punto
     anterior (por ejemplo, que el Punto 2 cargue la imagen A generada
-    por el Punto 1) sin necesidad de binarizarla nuevamente.
+    por el Punto 1). Los resultados se guardan en polaridad visual
+    (fondo blanco, células negras, igual a como se ven en el informe),
+    por lo que, por defecto, esta función invierte la imagen al
+    cargarla para devolverla en polaridad de cómputo (células en 255),
+    lista para usarse en reconstrucción u operaciones lógicas.
 
     Args:
         nombre_archivo (str): Nombre del archivo a cargar, incluyendo
             extensión (por ejemplo 'imagen_a.png').
         carpeta (str, optional): Carpeta donde buscar el archivo. Por
             defecto es 'img'.
+        invertir (bool, optional): Si es True, invierte la imagen
+            cargada para pasar de polaridad visual a polaridad de
+            cómputo. Si es False, devuelve la imagen tal cual está
+            guardada en disco. Por defecto es True.
 
     Returns:
         numpy.ndarray: Imagen cargada en escala de grises.
@@ -245,6 +253,9 @@ def cargar_imagen_resultado(nombre_archivo, carpeta=CARPETA_IMG):
 
     if imagen is None:
         raise FileNotFoundError(f"No se pudo leer la imagen: {ruta_origen}")
+
+    if invertir:
+        imagen = invertir_imagen(imagen)
 
     return imagen
 
@@ -447,6 +458,37 @@ def reconstruccion_morfologica(marcador, mascara):
             break
 
     return (reconstruida * 255).astype(np.uint8)
+
+
+def crear_marcador_borde(imagen_binaria):
+    """Construye un marcador restringido al marco exterior de la imagen.
+
+    Genera una máscara con 255 únicamente en el marco exterior (fila
+    superior, fila inferior, columna izquierda y columna derecha) de
+    la imagen, y la combina con AND contra la imagen recibida. El
+    resultado conserva solo los píxeles de esa imagen que caen justo
+    sobre el borde, quedando en 0 en todo lo demás.
+
+    Es una función genérica: sirve tanto para construir el marcador
+    que identifica objetos que tocan el borde (aplicada directamente
+    sobre la imagen binaria), como para la técnica de relleno de
+    agujeros (aplicada sobre el complemento de la imagen).
+
+    Args:
+        imagen_binaria (numpy.ndarray): Imagen binaria (0/255) sobre
+            la que se construye el marcador.
+
+    Returns:
+        numpy.ndarray: Marcador (0/255), subconjunto de
+        imagen_binaria, con los píxeles del borde encendidos.
+    """
+    marco = np.zeros_like(imagen_binaria)
+    marco[0, :] = 255
+    marco[-1, :] = 255
+    marco[:, 0] = 255
+    marco[:, -1] = 255
+
+    return operacion_and(imagen_binaria, marco)
 
 
 def crear_elemento_estructurante(forma="cruz", tamano=3):
