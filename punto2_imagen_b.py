@@ -149,8 +149,8 @@ def main():
         lista_imagenes,
         lista_titulos,
         prefijo=PREFIJO,
-        filas=2,
-        columnas=4,
+        filas=3,
+        columnas=3,
         titulo_general="Punto 2: Agujeros de las células con citoplasma")
 
 
