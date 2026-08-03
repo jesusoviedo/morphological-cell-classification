@@ -22,15 +22,22 @@ from util import graficar_imagenes
 
 
 def obtener_imagen_base():
-    """Obtiene la imagen base del trabajo, ya binarizada.
- 
+    """Obtiene la imagen base del trabajo en sus dos polaridades.
+
     Descarga la imagen base si todavía no existe localmente (la
     verificación la hace internamente descargar_imagen), y luego la
-    carga en escala de grises y la binariza con el criterio por
-    defecto del proyecto (umbral fijo en 127).
- 
+    carga en escala de grises, generando dos versiones binarizadas:
+
+    - imagen_original: mantiene la polaridad original de la imagen de
+      entrada (fondo blanco, células negras), sin invertir. Es la que
+      se usa para mostrar en el informe.
+    - imagen_mascara: invertida (células en 255, fondo en 0), lista
+      para usarse como máscara en las operaciones lógicas y la
+      reconstrucción morfológica del resto del pipeline.
+
     Returns:
-        numpy.ndarray: Imagen base binarizada (0/255).
+        tuple: Tupla (imagen_original, imagen_mascara), ambas
+        numpy.ndarray (0/255).
     """
     print(f"Descargando imagen {NOMBRE_IMAGEN}...")
     ruta_imagen = descargar_imagen()
@@ -51,14 +58,20 @@ def crear_marcador_borde(imagen_binaria):
     la imagen, y la combina con AND contra la imagen binaria. El
     resultado conserva solo los píxeles de la imagen original que
     caen justo sobre el borde, quedando en 0 en todo lo demás.
+
+    Tanto la entrada como la salida están en polaridad invertida (de
+    cómputo): las células en 255, el fondo en 0.
  
     Args:
-        imagen_binaria (numpy.ndarray): Imagen binaria (0/255) sobre
-            la que se construye el marcador.
+        imagen_binaria (numpy.ndarray): Imagen binaria (0/255), en
+            polaridad invertida (células en 255), sobre la que se
+            construye el marcador. En el pipeline del punto 1, es
+            imagen_mascara.
  
     Returns:
-        numpy.ndarray: Marcador (0/255), subconjunto de
-        imagen_binaria, con los píxeles del borde encendidos.
+        numpy.ndarray: Marcador (0/255), en la misma polaridad
+        invertida, subconjunto de imagen_binaria, con los píxeles del
+        borde encendidos.
     """
     marco = np.zeros_like(imagen_binaria)
     marco[0, :] = 255
@@ -72,19 +85,29 @@ def crear_marcador_borde(imagen_binaria):
 def generar_imagen_a(imagen_mascara, imagen_marcador):
     """Genera la imagen A: células sin truncar en los bordes.
  
-    Construye el marcador de borde, reconstruye a partir de él los
-    objetos que tocan el borde de la imagen, y elimina esos objetos de
-    la imagen original mediante XOR (válido porque la reconstrucción
-    es siempre un subconjunto de la imagen original).
+    Reconstruye a partir del marcador de borde los objetos que tocan
+    el borde de la imagen, y los elimina de la máscara mediante XOR
+    (válido porque la reconstrucción es siempre un subconjunto de la
+    máscara). El resultado se invierte antes de devolverlo, para que
+    imagen_a quede en la misma polaridad original que imagen_original
+    (fondo blanco, células negras), lista para el informe.
  
     Args:
-        imagen_mascara (numpy.ndarray): Imagen mascarada (0/255) de
-            entrada, con todas las células.
-        imagen_marcador (numpy.ndarray): Marcador de borde (0/255).
+        imagen_mascara (numpy.ndarray): Imagen binaria (0/255), en
+            polaridad invertida (células en 255), con todas las
+            células, usada como máscara de la reconstrucción.
+        imagen_marcador (numpy.ndarray): Marcador de borde (0/255), en
+            la misma polaridad invertida.
  
     Returns:
-        numpy.ndarray: Imagen A (0/255), sin las células que tocan el
-        borde.
+        tuple: Tupla (imagen_a, image_con_objeto_borde).
+        imagen_a (numpy.ndarray) es la imagen A final (0/255), ya
+        invertida a la polaridad original (fondo blanco, células
+        negras). image_con_objeto_borde (numpy.ndarray) es la
+        reconstrucción de los objetos que tocan el borde, en
+        polaridad invertida (de cómputo, sin pasar por la inversión
+        final), pensada para mostrar el paso intermedio en el
+        informe.
     """
 
     image_con_objeto_borde = reconstruccion_morfologica(imagen_marcador, imagen_mascara)
