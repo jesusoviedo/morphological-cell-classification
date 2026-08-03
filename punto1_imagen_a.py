@@ -130,7 +130,7 @@ def main():
         imagen_a]
     lista_titulos = [
         "Imagen Original (entrada)",
-        "Máscara (para reconstrucción)",
+        "Máscara (operativa, invertida)",
         "Marcador (borde de la máscara)",
         "Reconstrucción(Marcador, Máscara)",
         "XOR(Máscara, Reconstrucción)",
