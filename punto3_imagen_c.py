@@ -24,18 +24,25 @@ def obtener_imagenes_previas():
     """Obtiene las imágenes A y B generadas por los puntos anteriores.
 
     Carga "imagen_a.png" e "imagen_b.png" (los resultados canónicos de
-    los puntos 1 y 2) en polaridad de cómputo (invertir=True, el
-    valor por defecto de cargar_imagen_resultado): en imagen_a, las
-    células quedan en 255; en imagen_b, los agujeros quedan en 255.
+    los puntos 1 y 2) en sus dos polaridades: tal como quedaron
+    guardadas en disco (polaridad visual, invertir=False), útil para
+    mostrar en el informe de dónde se partió, y también invertidas a
+    polaridad operativa (invertir=True, el valor por defecto), que es
+    la que necesita la reconstrucción: en imagen_a, las células quedan
+    en 255; en imagen_b, los agujeros quedan en 255.
 
     Returns:
-        tuple: Tupla (imagen_a, imagen_b), ambas numpy.ndarray (0/255),
-        en polaridad de cómputo.
+        tuple: Tupla (imagen_a_original, imagen_b_original, imagen_a,
+        imagen_b). Las dos primeras están en polaridad visual (tal
+        cual se guardaron); las dos últimas en polaridad operativa.
     """
+    imagen_a_original = cargar_imagen_resultado(NOMBRE_IMAGEN_A, invertir=False)
+    imagen_b_original = cargar_imagen_resultado(NOMBRE_IMAGEN_B, invertir=False)
+
     imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
     imagen_b = cargar_imagen_resultado(NOMBRE_IMAGEN_B)
 
-    return imagen_a, imagen_b
+    return imagen_a_original, imagen_b_original, imagen_a, imagen_b
 
 
 def generar_imagen_c(imagen_a, imagen_b):
@@ -56,23 +63,23 @@ def generar_imagen_c(imagen_a, imagen_b):
     marcador, por lo que no aparecen en el resultado.
 
     Args:
-        imagen_a (numpy.ndarray): Imagen A (0/255), en polaridad de
-            cómputo (células en 255), usada como máscara.
-        imagen_b (numpy.ndarray): Imagen B (0/255), en polaridad de
-            cómputo (agujeros en 255), usada como marcador.
+        imagen_a (numpy.ndarray): Imagen A (0/255), en polaridad
+            operativa (células en 255), usada como máscara.
+        imagen_b (numpy.ndarray): Imagen B (0/255), en polaridad
+            operativa (agujeros en 255), usada como marcador.
 
     Returns:
-        tuple: Tupla (imagen_c, imagen_c_computo). imagen_c es el
+        tuple: Tupla (imagen_c, imagen_c_operativa). imagen_c es el
         resultado final (0/255), invertido a polaridad visual (fondo
         blanco, células negras), lista para el informe y para el
-        punto 4. imagen_c_computo es el resultado de la reconstrucción
-        antes de invertir, en polaridad de cómputo, pensada para
+        punto 4. imagen_c_operativa es el resultado de la reconstrucción
+        antes de invertir, en polaridad operativa, pensada para
         mostrar el paso intermedio en el informe.
     """
-    imagen_c_computo = reconstruccion_morfologica(imagen_b, imagen_a)
-    imagen_c = invertir_imagen(imagen_c_computo)
+    imagen_c_operativa = reconstruccion_morfologica(imagen_b, imagen_a)
+    imagen_c = invertir_imagen(imagen_c_operativa)
 
-    return imagen_c, imagen_c_computo
+    return imagen_c, imagen_c_operativa
 
 
 def main():
@@ -81,7 +88,13 @@ def main():
     PREFIJO = "punto3"
 
     # Obtener las imágenes A y B generadas por los puntos anteriores
-    imagen_a, imagen_b = obtener_imagenes_previas()
+    imagen_a_original, imagen_b_original, imagen_a, imagen_b = obtener_imagenes_previas()
+
+    ruta_imagen_a_original = guardar_imagen(imagen_a_original, "imagen_a_original.png", prefijo=PREFIJO)
+    print(f"Imagen A (original) guardada en: {ruta_imagen_a_original}")
+
+    ruta_imagen_b_original = guardar_imagen(imagen_b_original, "imagen_b_original.png", prefijo=PREFIJO)
+    print(f"Imagen B (original) guardada en: {ruta_imagen_b_original}")
 
     ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a_mascara.png", prefijo=PREFIJO)
     print(f"Imagen A (máscara) guardada en: {ruta_imagen_a}")
@@ -90,19 +103,28 @@ def main():
     print(f"Imagen B (marcador) guardada en: {ruta_imagen_b}")
 
     # Generar la imagen C
-    imagen_c, imagen_c_computo = generar_imagen_c(imagen_a, imagen_b)
+    imagen_c, imagen_c_operativa = generar_imagen_c(imagen_a, imagen_b)
 
-    ruta_imagen_c_computo = guardar_imagen(imagen_c_computo, "imagen_c_computo.png", prefijo=PREFIJO)
-    print(f"Imagen C (cómputo) guardada en: {ruta_imagen_c_computo}")
+    ruta_imagen_c_operativa = guardar_imagen(imagen_c_operativa, "imagen_c_operativa.png", prefijo=PREFIJO)
+    print(f"Imagen C (operativa) guardada en: {ruta_imagen_c_operativa}")
 
     ruta_imagen_c = guardar_imagen(imagen_c, NOMBRE_IMAGEN_C)
     print(f"Imagen C guardada en: {ruta_imagen_c}")
 
     # Graficar todas las imágenes generadas
-    lista_imagenes = [imagen_a, imagen_b, imagen_c_computo, imagen_c]
+    lista_imagenes = [
+        imagen_a_original,
+        imagen_b_original,
+        imagen_a,
+        imagen_b,
+        imagen_c_operativa,
+        imagen_c,
+    ]
     lista_titulos = [
-        "Imagen A (máscara, cómputo)",
-        "Imagen B (marcador, cómputo)",
+        "Imagen A (original)",
+        "Imagen B (original)",
+        "Imagen A (máscara, operativa, invertida)",
+        "Imagen B (marcador, operativa, invertida)",
         "Reconstrucción(Marcador, Máscara)",
         "Imagen C (resultado, invertida)",
     ]
@@ -112,7 +134,7 @@ def main():
         lista_titulos,
         prefijo=PREFIJO,
         filas=2,
-        columnas=2,
+        columnas=3,
         titulo_general="Punto 3: Células agujereadas (Tipo 2, 3 y 4)",
     )
 
