@@ -196,13 +196,16 @@ def cargar_imagen_binaria(ruta_imagen, umbral=127, valor_maximo=255, invertir_au
     return binarizar_imagen(imagen_gris, umbral, valor_maximo, invertir_automatico)
 
 
-def guardar_imagen(imagen, nombre_destino, carpeta=CARPETA_IMG):
+def guardar_imagen(imagen, nombre_destino, carpeta=CARPETA_IMG, prefijo=None):
     """Guarda una imagen en disco dentro de una carpeta local.
 
-    Si la carpeta indicada no existe, la crea antes de guardar la
-    imagen. Pensada para almacenar los resultados intermedios de cada
-    punto (imagen A, B, C, etc.) en la misma carpeta donde se guardó
-    la imagen base.
+    Si la carpeta de destino no existe, la crea antes de guardar la
+    imagen. Pensada para almacenar tanto los resultados canónicos que
+    se encadenan entre puntos (imagen A, B, C, etc., guardados
+    directamente en carpeta, sin prefijo) como las imágenes
+    intermedias de cada punto (guardadas en una subcarpeta con el
+    nombre del prefijo, para no mezclarlas todas sueltas dentro de
+    carpeta).
 
     Args:
         imagen (numpy.ndarray): Imagen a guardar.
@@ -210,6 +213,10 @@ def guardar_imagen(imagen, nombre_destino, carpeta=CARPETA_IMG):
             extensión (por ejemplo 'imagen_a.png').
         carpeta (str, optional): Carpeta donde se guardará la imagen.
             Por defecto es 'img'.
+        prefijo (str, optional): Si se indica, la imagen se guarda
+            dentro de una subcarpeta con ese nombre, dentro de
+            carpeta (se crea si no existe). Si es None, se guarda
+            directamente en carpeta. Por defecto es None.
 
     Returns:
         str: Ruta completa donde se guardó la imagen.
@@ -218,10 +225,12 @@ def guardar_imagen(imagen, nombre_destino, carpeta=CARPETA_IMG):
         IOError: Si OpenCV no pudo escribir la imagen en la ruta
             indicada (por ejemplo, por una extensión no soportada).
     """
-    if not os.path.exists(carpeta):
-        os.makedirs(carpeta)
+    carpeta_destino = os.path.join(carpeta, prefijo) if prefijo else carpeta
 
-    ruta_destino = os.path.join(carpeta, nombre_destino)
+    if not os.path.exists(carpeta_destino):
+        os.makedirs(carpeta_destino)
+
+    ruta_destino = os.path.join(carpeta_destino, nombre_destino)
 
     if not cv2.imwrite(ruta_destino, imagen):
         raise IOError(f"No se pudo guardar la imagen en: {ruta_destino}")
