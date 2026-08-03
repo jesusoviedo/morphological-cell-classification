@@ -8,7 +8,6 @@ Enunciado:
     truncadas en los bordes de la imagen?
 """
 
-import numpy as np
 # Importar funciones auxiliares
 from util import NOMBRE_IMAGEN
 from util import descargar_imagen
@@ -18,6 +17,7 @@ from util import operacion_xor
 from util import guardar_imagen
 from util import invertir_imagen
 from util import reconstruccion_morfologica
+from util import crear_marcador_borde
 from util import graficar_imagenes
 
 
@@ -48,38 +48,6 @@ def obtener_imagen_base():
     print(f"Imagen {NOMBRE_IMAGEN} descargada en: {ruta_imagen}")
 
     return imagen_original, imagen_mascara
-
-
-def crear_marcador_borde(imagen_binaria):
-    """Construye el marcador para eliminar objetos que tocan el borde.
- 
-    Genera una máscara con 255 únicamente en el marco exterior (fila
-    superior, fila inferior, columna izquierda y columna derecha) de
-    la imagen, y la combina con AND contra la imagen binaria. El
-    resultado conserva solo los píxeles de la imagen original que
-    caen justo sobre el borde, quedando en 0 en todo lo demás.
-
-    Tanto la entrada como la salida están en polaridad invertida (de
-    cómputo): las células en 255, el fondo en 0.
- 
-    Args:
-        imagen_binaria (numpy.ndarray): Imagen binaria (0/255), en
-            polaridad invertida (células en 255), sobre la que se
-            construye el marcador. En el pipeline del punto 1, es
-            imagen_mascara.
- 
-    Returns:
-        numpy.ndarray: Marcador (0/255), en la misma polaridad
-        invertida, subconjunto de imagen_binaria, con los píxeles del
-        borde encendidos.
-    """
-    marco = np.zeros_like(imagen_binaria)
-    marco[0, :] = 255
-    marco[-1, :] = 255
-    marco[:, 0] = 255
-    marco[:, -1] = 255
- 
-    return operacion_and(imagen_binaria, marco)
 
 
 def generar_imagen_a(imagen_mascara, imagen_marcador):
