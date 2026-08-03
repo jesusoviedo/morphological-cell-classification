@@ -102,25 +102,25 @@ def main():
     # Obtener la imagen A generada por el punto 1
     imagen_a = obtener_imagen_a()
 
-    ruta_imagen_a_entrada = guardar_imagen(imagen_a, f"{PREFIJO}_imagen_a_entrada.png")
+    ruta_imagen_a_entrada = guardar_imagen(imagen_a, "imagen_a_entrada.png", prefijo=PREFIJO)
     print(f"Imagen A de entrada guardada en: {ruta_imagen_a_entrada}")
 
     # Generar la imagen B y los pasos intermedios
     imagen_b, imagen_agujeros_computo, imagen_rellena, imagen_reconstruida_fondo, imagen_marcador_relleno, imagen_a_computo = generar_imagen_b(imagen_a)
 
-    ruta_imagen_marcador_relleno = guardar_imagen(imagen_marcador_relleno, f"{PREFIJO}_imagen_marcador_relleno.png")
+    ruta_imagen_marcador_relleno = guardar_imagen(imagen_marcador_relleno, "imagen_marcador_relleno.png", prefijo=PREFIJO)
     print(f"Imagen marcador de relleno guardada en: {ruta_imagen_marcador_relleno}")
 
-    ruta_imagen_reconstruida_fondo = guardar_imagen(imagen_reconstruida_fondo, f"{PREFIJO}_imagen_reconstruida_fondo.png")
+    ruta_imagen_reconstruida_fondo = guardar_imagen(imagen_reconstruida_fondo, "imagen_reconstruida_fondo.png", prefijo=PREFIJO)
     print(f"Imagen reconstruida (fondo) guardada en: {ruta_imagen_reconstruida_fondo}")
 
-    ruta_imagen_rellena = guardar_imagen(imagen_rellena, f"{PREFIJO}_imagen_rellena.png")
+    ruta_imagen_rellena = guardar_imagen(imagen_rellena, "imagen_rellena.png", prefijo=PREFIJO)
     print(f"Imagen rellena guardada en: {ruta_imagen_rellena}")
 
-    ruta_imagen_a_computo = guardar_imagen(imagen_a_computo, f"{PREFIJO}_imagen_a_computo.png")
+    ruta_imagen_a_computo = guardar_imagen(imagen_a_computo, "imagen_a_computo.png", prefijo=PREFIJO)
     print(f"Imagen A (cómputo) guardada en: {ruta_imagen_a_computo}")
 
-    ruta_imagen_agujeros_computo = guardar_imagen(imagen_agujeros_computo, f"{PREFIJO}_imagen_agujeros_computo.png")
+    ruta_imagen_agujeros_computo = guardar_imagen(imagen_agujeros_computo, "imagen_agujeros_computo.png", prefijo=PREFIJO)
     print(f"Imagen agujeros (cómputo) guardada en: {ruta_imagen_agujeros_computo}")
 
     ruta_imagen_b = guardar_imagen(imagen_b, NOMBRE_IMAGEN_B)
@@ -151,8 +151,7 @@ def main():
         prefijo=PREFIJO,
         filas=2,
         columnas=4,
-        titulo_general="Punto 2: Agujeros de las células con citoplasma",
-    )
+        titulo_general="Punto 2: Agujeros de las células con citoplasma")
 
 
 if __name__ == "__main__":
