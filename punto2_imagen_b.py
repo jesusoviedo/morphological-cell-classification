@@ -28,7 +28,7 @@ def obtener_imagen_a():
     quedó guardada en disco, es decir, en polaridad visual (fondo
     blanco, células negras). Esta misma imagen sirve tanto para
     mostrarla en el informe como para usarse directamente como el
-    complemento de la imagen A en polaridad de cómputo, ya que ambas
+    complemento de la imagen A en polaridad operativa, ya que ambas
     coinciden matemáticamente (ver generar_imagen_b).
 
     Returns:
@@ -44,15 +44,15 @@ def generar_imagen_b(imagen_a):
 
     Aplica la técnica de relleno de agujeros vista en clase. Como
     imagen_a llega en polaridad visual (que coincide matemáticamente
-    con el complemento de la imagen A en polaridad de cómputo), se usa
+    con el complemento de la imagen A en polaridad operativa), se usa
     directamente como máscara para reconstruir el fondo conectado al
     borde: se construye un marcador restringido al marco exterior de
     esa misma imagen, y se reconstruye a partir de él (lo que recupera
     únicamente el fondo verdaderamente conectado al borde, dejando
     afuera los agujeros internos, que no lo tocan). Se invierte el
     resultado para obtener la imagen con los agujeros rellenados
-    (polaridad de cómputo). Para el XOR final, se necesita imagen_a en
-    esa misma polaridad de cómputo, así que se invierte una única vez
+    (polaridad operativa). Para el XOR final, se necesita imagen_a en
+    esa misma polaridad operativa, así que se invierte una única vez
     antes de restarla de la imagen rellena (válido porque la imagen
     rellenada es siempre un superconjunto de la imagen A). Por último,
     se invierte el resultado para dejar imagen_b en polaridad visual,
@@ -67,16 +67,16 @@ def generar_imagen_b(imagen_a):
             obtener_imagen_a().
 
     Returns:
-        tuple: Tupla (imagen_b, imagen_agujeros_computo,
+        tuple: Tupla (imagen_b, imagen_agujeros_operativa,
         imagen_rellena, imagen_reconstruida_fondo,
-        imagen_marcador_relleno, imagen_a_computo).
+        imagen_marcador_relleno, imagen_a_operativa).
         imagen_b es el resultado final (0/255), en polaridad visual
         (fondo blanco, agujeros negros), lista para el informe y para
-        el punto 3. imagen_a_computo es imagen_a invertida a polaridad
-        de cómputo (células en 255), devuelta para poder mostrar en el
-        informe los dos operandos del XOR final. Las demás son los
-        pasos intermedios, en polaridad de cómputo, pensadas para
-        mostrar en el informe.
+        el punto 3. imagen_a_operativa es imagen_a invertida a
+        polaridad operativa (células en 255), devuelta para poder
+        mostrar en el informe los dos operandos del XOR final. Las
+        demás son los pasos intermedios, en polaridad operativa,
+        pensadas para mostrar en el informe.
     """
     imagen_marcador_relleno = crear_marcador_borde(imagen_a)
     imagen_reconstruida_fondo = reconstruccion_morfologica(
@@ -85,13 +85,13 @@ def generar_imagen_b(imagen_a):
     imagen_rellena = invertir_imagen(imagen_reconstruida_fondo)
 
     # imagen_a llega en polaridad visual; para el XOR final se necesita
-    # en polaridad de cómputo (células en 255), igual que imagen_rellena.
-    imagen_a_computo = invertir_imagen(imagen_a)
-    imagen_agujeros_computo = operacion_xor(imagen_rellena, imagen_a_computo)
+    # en polaridad operativa (células en 255), igual que imagen_rellena.
+    imagen_a_operativa = invertir_imagen(imagen_a)
+    imagen_agujeros_operativa = operacion_xor(imagen_rellena, imagen_a_operativa)
 
-    imagen_b = invertir_imagen(imagen_agujeros_computo)
+    imagen_b = invertir_imagen(imagen_agujeros_operativa)
 
-    return imagen_b, imagen_agujeros_computo, imagen_rellena, imagen_reconstruida_fondo, imagen_marcador_relleno, imagen_a_computo
+    return imagen_b, imagen_agujeros_operativa, imagen_rellena, imagen_reconstruida_fondo, imagen_marcador_relleno, imagen_a_operativa
 
 
 def main():
@@ -106,7 +106,7 @@ def main():
     print(f"Imagen A de entrada guardada en: {ruta_imagen_a_entrada}")
 
     # Generar la imagen B y los pasos intermedios
-    imagen_b, imagen_agujeros_computo, imagen_rellena, imagen_reconstruida_fondo, imagen_marcador_relleno, imagen_a_computo = generar_imagen_b(imagen_a)
+    imagen_b, imagen_agujeros_operativa, imagen_rellena, imagen_reconstruida_fondo, imagen_marcador_relleno, imagen_a_operativa = generar_imagen_b(imagen_a)
 
     ruta_imagen_marcador_relleno = guardar_imagen(imagen_marcador_relleno, "imagen_marcador_relleno.png", prefijo=PREFIJO)
     print(f"Imagen marcador de relleno guardada en: {ruta_imagen_marcador_relleno}")
@@ -117,11 +117,11 @@ def main():
     ruta_imagen_rellena = guardar_imagen(imagen_rellena, "imagen_rellena.png", prefijo=PREFIJO)
     print(f"Imagen rellena guardada en: {ruta_imagen_rellena}")
 
-    ruta_imagen_a_computo = guardar_imagen(imagen_a_computo, "imagen_a_computo.png", prefijo=PREFIJO)
-    print(f"Imagen A (cómputo) guardada en: {ruta_imagen_a_computo}")
+    ruta_imagen_a_operativa = guardar_imagen(imagen_a_operativa, "imagen_a_operativa.png", prefijo=PREFIJO)
+    print(f"Imagen A (operativa) guardada en: {ruta_imagen_a_operativa}")
 
-    ruta_imagen_agujeros_computo = guardar_imagen(imagen_agujeros_computo, "imagen_agujeros_computo.png", prefijo=PREFIJO)
-    print(f"Imagen agujeros (cómputo) guardada en: {ruta_imagen_agujeros_computo}")
+    ruta_imagen_agujeros_operativa = guardar_imagen(imagen_agujeros_operativa, "imagen_agujeros_operativa.png", prefijo=PREFIJO)
+    print(f"Imagen agujeros (operativa) guardada en: {ruta_imagen_agujeros_operativa}")
 
     ruta_imagen_b = guardar_imagen(imagen_b, NOMBRE_IMAGEN_B)
     print(f"Imagen B guardada en: {ruta_imagen_b}")
@@ -131,8 +131,8 @@ def main():
         imagen_marcador_relleno,
         imagen_reconstruida_fondo,
         imagen_rellena,
-        imagen_a_computo,
-        imagen_agujeros_computo,
+        imagen_a_operativa,
+        imagen_agujeros_operativa,
         imagen_b,
     ]
     lista_titulos = [
