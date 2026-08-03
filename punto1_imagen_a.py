@@ -96,25 +96,25 @@ def main():
     # Obtener la imagen original y la máscara
     imagen_original, imagen_mascara = obtener_imagen_base()
 
-    ruta_imagen_original = guardar_imagen(imagen_original, f"{PREFIJO}_imagen_original.png")
+    ruta_imagen_original = guardar_imagen(imagen_original, "imagen_original.png", prefijo=PREFIJO)
     print(f"Imagen original guardada en: {ruta_imagen_original}")
 
-    ruta_imagen_mascara = guardar_imagen(imagen_mascara, f"{PREFIJO}_imagen_mascara.png")
+    ruta_imagen_mascara = guardar_imagen(imagen_mascara, "imagen_mascara.png", prefijo=PREFIJO)
     print(f"Imagen máscara guardada en: {ruta_imagen_mascara}")
 
     # Crear el marcador de borde a partir de la imagen máscara
     imagen_marcador = crear_marcador_borde(imagen_mascara)
 
-    ruta_imagen_marcador = guardar_imagen(imagen_marcador, f"{PREFIJO}_imagen_marcador.png")
+    ruta_imagen_marcador = guardar_imagen(imagen_marcador, "imagen_marcador.png", prefijo=PREFIJO)
     print(f"Imagen marcador guardada en: {ruta_imagen_marcador}")
 
     # Generar la imagen A y la imagen con objetos de borde
     imagen_a, imagen_con_operacion_xor,image_con_objeto_borde = generar_imagen_a(imagen_mascara, imagen_marcador)
 
-    ruta_image_con_objeto_borde = guardar_imagen(image_con_objeto_borde, f"{PREFIJO}_image_con_objeto_borde.png")
+    ruta_image_con_objeto_borde = guardar_imagen(image_con_objeto_borde, "image_con_objeto_borde.png", prefijo=PREFIJO)
     print(f"Imagen con objetos de borde guardada en: {ruta_image_con_objeto_borde}")
 
-    ruta_imagen_con_operacion_xor = guardar_imagen(imagen_con_operacion_xor, f"{PREFIJO}_imagen_con_operacion_xor.png")
+    ruta_imagen_con_operacion_xor = guardar_imagen(imagen_con_operacion_xor, "imagen_con_operacion_xor.png", prefijo=PREFIJO)
     print(f"Imagen con operación XOR guardada en: {ruta_imagen_con_operacion_xor}")
 
     ruta_imagen_a = guardar_imagen(imagen_a, NOMBRE_IMAGEN_A)
