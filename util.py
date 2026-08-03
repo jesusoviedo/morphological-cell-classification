@@ -315,11 +315,13 @@ def graficar_imagenes(imagenes, titulos, prefijo, filas=1, columnas=None,
         os.makedirs(carpeta)
 
     figura, ejes = plt.subplots(filas, columnas, figsize=(5 * columnas, 5 * filas))
+    figura.patch.set_facecolor("#dddddd")
     ejes = np.array(ejes).reshape(-1)
 
     for indice, eje in enumerate(ejes):
+        eje.set_facecolor("#dddddd")
         if indice < len(imagenes):
-            eje.imshow(imagenes[indice], cmap="gray")
+            eje.imshow(imagenes[indice], cmap="gray", vmin=0, vmax=255)
             eje.set_title(titulos[indice])
         eje.axis("off")
 
