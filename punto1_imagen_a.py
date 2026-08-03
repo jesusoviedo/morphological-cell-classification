@@ -111,8 +111,9 @@ def generar_imagen_a(imagen_mascara, imagen_marcador):
     """
 
     image_con_objeto_borde = reconstruccion_morfologica(imagen_marcador, imagen_mascara)
-    nueva_imagen = operacion_xor(imagen_mascara, image_con_objeto_borde)
-    return invertir_imagen(nueva_imagen), image_con_objeto_borde
+    imagen_con_operacion_xor = operacion_xor(imagen_mascara, image_con_objeto_borde)
+    imagen_a = invertir_imagen(imagen_con_operacion_xor)
+    return imagen_a, imagen_con_operacion_xor, image_con_objeto_borde
 
 
 def main():
@@ -136,17 +137,20 @@ def main():
     print(f"Imagen marcador guardada en: {ruta_imagen_marcador}")
 
     # Generar la imagen A y la imagen con objetos de borde
-    imagen_a, image_con_objeto_borde = generar_imagen_a(imagen_mascara, imagen_marcador)
+    imagen_a, imagen_con_operacion_xor,image_con_objeto_borde = generar_imagen_a(imagen_mascara, imagen_marcador)
 
     ruta_image_con_objeto_borde = guardar_imagen(image_con_objeto_borde, f"{PREFIJO}_image_con_objeto_borde.png")
     print(f"Imagen con objetos de borde guardada en: {ruta_image_con_objeto_borde}")
+
+    ruta_imagen_con_operacion_xor = guardar_imagen(imagen_con_operacion_xor, f"{PREFIJO}_imagen_con_operacion_xor.png")
+    print(f"Imagen con operación XOR guardada en: {ruta_imagen_con_operacion_xor}")
 
     ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a.png")
     print(f"Imagen A guardada en: {ruta_imagen_a}")
 
     # Graficar todas las imágenes generadas
-    lista_imagenes = [imagen_original, imagen_mascara, imagen_marcador, image_con_objeto_borde,imagen_a]
-    lista_titulos = ["Imagen Original", "Imagen Mascara", "Imagen Marcador", "Imagen con Objetos de Borde", "Imagen A"]
+    lista_imagenes = [imagen_original, imagen_mascara, imagen_marcador, image_con_objeto_borde, imagen_con_operacion_xor, imagen_a]
+    lista_titulos = ["Imagen Original", "Imagen Mascara", "Imagen Marcador", "Imagen con Objetos de Borde", "Imagen con Operación XOR", "Imagen A"]
 
     graficar_imagenes(lista_imagenes, 
                       lista_titulos, 
