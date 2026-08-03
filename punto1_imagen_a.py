@@ -141,7 +141,7 @@ def main():
     ruta_image_con_objeto_borde = guardar_imagen(image_con_objeto_borde, f"{PREFIJO}_image_con_objeto_borde.png")
     print(f"Imagen con objetos de borde guardada en: {ruta_image_con_objeto_borde}")
 
-    ruta_imagen_a = guardar_imagen(imagen_a, f"{PREFIJO}_imagen_a.png")
+    ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a.png")
     print(f"Imagen A guardada en: {ruta_imagen_a}")
 
     # Graficar todas las imágenes generadas
