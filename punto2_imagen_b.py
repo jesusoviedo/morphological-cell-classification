@@ -140,8 +140,8 @@ def main():
         "Marcador (borde de la máscara)",
         "Reconstrucción(Marcador, Máscara)",
         "Imagen rellena (Reconstrucción invertida)",
-        "Imagen A (cómputo, invertida)",
-        "XOR(Imagen rellena, Imagen A cómputo)",
+        "Imagen A (operativa, invertida)",
+        "XOR(Imagen rellena, Imagen A operativa)",
         "Imagen B (resultado, invertida)",
     ]
 
