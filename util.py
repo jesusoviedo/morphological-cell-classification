@@ -99,19 +99,19 @@ def guardar_en_carpeta_img(contenido, nombre_destino, carpeta=CARPETA_IMG):
     return ruta_destino
 
 
-def binarizar_imagen(imagen, umbral=127, valor_maximo=255):
+def binarizar_imagen(imagen, umbral=127, valor_maximo=255, invertir_automatico=True):
     """Convierte una imagen en escala de grises a una imagen binaria.
 
     Por defecto utiliza un umbral fijo de 127. Si se pasa umbral=None, el
     umbral se calcula automáticamente mediante el método de Otsu.
 
-    Después de umbralizar, se garantiza que el objeto de interés (que
-    se asume minoritario en cantidad de píxeles frente al fondo)
-    quede codificado en valor_maximo, invirtiendo el resultado si
-    fuera necesario. Esto es indispensable en imágenes como la de este
-    trabajo, donde las células son oscuras sobre un fondo claro: al
-    umbralizar con THRESH_BINARY, el fondo (mayoritario) quedaría en
-    valor_maximo si no se corrigiera.
+    Si invertir_automatico es True, después de umbralizar se garantiza
+    que el objeto de interés (que se asume minoritario en cantidad de
+    píxeles frente al fondo) quede codificado en valor_maximo,
+    invirtiendo el resultado si fuera necesario. Esto es indispensable
+    en imágenes como la de este trabajo, donde las células son oscuras
+    sobre un fondo claro: al umbralizar con THRESH_BINARY, el fondo
+    (mayoritario) quedaría en valor_maximo si no se corrigiera.
 
     Args:
         imagen (numpy.ndarray): Imagen en escala de grises a binarizar.
@@ -120,10 +120,16 @@ def binarizar_imagen(imagen, umbral=127, valor_maximo=255):
             de Otsu. Por defecto es 127.
         valor_maximo (int, optional): Valor asignado a los píxeles que
             representan al objeto de interés. Por defecto es 255.
+        invertir_automatico (bool, optional): Si es True, corrige la
+            polaridad del resultado cuando el fondo queda codificado
+            como mayoría en valor_maximo. Si es False, se respeta el
+            resultado tal cual lo entrega THRESH_BINARY, sin corregir
+            nada. Por defecto es True.
 
     Returns:
         numpy.ndarray: Imagen binaria resultante, con el objeto de
-        interés en valor_maximo y el fondo en 0.
+        interés en valor_maximo y el fondo en 0 (si
+        invertir_automatico es True).
     """
     if umbral is None:
         _, imagen_binaria = cv2.threshold(imagen, 
@@ -136,16 +142,17 @@ def binarizar_imagen(imagen, umbral=127, valor_maximo=255):
                                           valor_maximo, 
                                           cv2.THRESH_BINARY)    
 
-    cantidad_encendidos = np.count_nonzero(imagen_binaria)
-    cantidad_apagados = imagen_binaria.size - cantidad_encendidos
+    if invertir_automatico:
+        cantidad_encendidos = np.count_nonzero(imagen_binaria)
+        cantidad_apagados = imagen_binaria.size - cantidad_encendidos
 
-    if cantidad_encendidos > cantidad_apagados:
-        imagen_binaria = invertir_imagen(imagen_binaria)
+        if cantidad_encendidos > cantidad_apagados:
+            imagen_binaria = invertir_imagen(imagen_binaria)
 
     return imagen_binaria
 
 
-def cargar_imagen_binaria(ruta_imagen, umbral=127, valor_maximo=255):
+def cargar_imagen_binaria(ruta_imagen, umbral=127, valor_maximo=255, invertir_automatico=True):
     """Carga una imagen desde disco y la convierte a binaria.
 
     Lee la imagen en escala de grises desde la ruta indicada y aplica
@@ -158,7 +165,12 @@ def cargar_imagen_binaria(ruta_imagen, umbral=127, valor_maximo=255):
             None, el umbral se calcula automáticamente con el método
             de Otsu. Por defecto es 127.
         valor_maximo (int, optional): Valor asignado a los píxeles que
-            superan el umbral. Por defecto es 255.
+            representan al objeto de interés. Por defecto es 255.
+        invertir_automatico (bool, optional): Si es True, corrige la
+            polaridad del resultado cuando el fondo queda codificado
+            como mayoría en valor_maximo. Si es False, se respeta el
+            resultado tal cual lo entrega THRESH_BINARY, sin corregir
+            nada. Por defecto es True.
 
     Returns:
         numpy.ndarray: Imagen binaria resultante.
@@ -172,7 +184,7 @@ def cargar_imagen_binaria(ruta_imagen, umbral=127, valor_maximo=255):
     if imagen_gris is None:
         raise FileNotFoundError(f"No se pudo leer la imagen: {ruta_imagen}")
 
-    return binarizar_imagen(imagen_gris, umbral, valor_maximo)
+    return binarizar_imagen(imagen_gris, umbral, valor_maximo, invertir_automatico)
 
 
 def guardar_imagen(imagen, nombre_destino, carpeta=CARPETA_IMG):
@@ -305,7 +317,7 @@ def graficar_imagenes(imagenes, titulos, prefijo, filas=1, columnas=None,
 
     plt.tight_layout()
 
-    ruta_destino = os.path.join(carpeta, f"{prefijo}comparacion.png")
+    ruta_destino = os.path.join(carpeta, f"{prefijo}_comparacion.png")
     figura.savefig(ruta_destino)
 
     plt.show()
