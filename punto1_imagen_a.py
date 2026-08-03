@@ -120,8 +120,21 @@ def main():
     print(f"Imagen A guardada en: {ruta_imagen_a}")
 
     # Graficar todas las imágenes generadas
-    lista_imagenes = [imagen_original, imagen_mascara, imagen_marcador, image_con_objeto_borde, imagen_con_operacion_xor, imagen_a]
-    lista_titulos = ["Imagen Original", "Imagen Mascara", "Imagen Marcador", "Imagen con Objetos de Borde", "Imagen con Operación XOR", "Imagen A"]
+    lista_imagenes = [
+        imagen_original, 
+        imagen_mascara, 
+        imagen_marcador, 
+        image_con_objeto_borde, 
+        imagen_con_operacion_xor, 
+        imagen_a]
+    lista_titulos = [
+        "Imagen Original (entrada)",
+        "Máscara (para reconstrucción)",
+        "Marcador (borde de la máscara)",
+        "Reconstrucción(Marcador, Máscara)",
+        "XOR(Máscara, Reconstrucción)",
+        "Imagen A (resultado, invertida)",
+    ]
 
     graficar_imagenes(lista_imagenes, 
                       lista_titulos, 
