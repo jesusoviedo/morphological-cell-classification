@@ -8,3 +8,134 @@ Enunciado:
     imagen D de todas las células no agujereadas (sin citoplasma) de
     Tipo 1?
 """
+
+# Importar funciones auxiliares
+from util import NOMBRE_IMAGEN_A
+from util import NOMBRE_IMAGEN_C
+from util import NOMBRE_IMAGEN_D
+from util import cargar_imagen_resultado
+from util import guardar_imagen
+from util import invertir_imagen
+from util import operacion_xor
+from util import graficar_imagenes
+
+
+def obtener_imagenes_previas():
+    """Obtiene las imágenes A y C generadas por los puntos anteriores.
+
+    Carga "imagen_a.png" e "imagen_c.png" (los resultados canónicos de
+    los puntos 1 y 3) en sus dos polaridades: tal como quedaron
+    guardadas en disco (polaridad visual, invertir=False), útil para
+    mostrar en el informe de dónde se partió, y también invertidas a
+    polaridad operativa (invertir=True, el valor por defecto), que es
+    la que necesita la operación lógica: en ambas, las células quedan
+    en 255.
+
+    Returns:
+        tuple: Tupla (imagen_a_original, imagen_c_original, imagen_a,
+        imagen_c). Las dos primeras están en polaridad visual (tal
+        cual se guardaron); las dos últimas en polaridad operativa.
+    """
+    imagen_a_original = cargar_imagen_resultado(NOMBRE_IMAGEN_A, invertir=False)
+    imagen_c_original = cargar_imagen_resultado(NOMBRE_IMAGEN_C, invertir=False)
+
+    imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
+    imagen_c = cargar_imagen_resultado(NOMBRE_IMAGEN_C)
+
+    return imagen_a_original, imagen_c_original, imagen_a, imagen_c
+
+
+def generar_imagen_d(imagen_a, imagen_c):
+    """Genera la imagen D: células no agujereadas (Tipo 1).
+
+    La imagen C (células agujereadas, Tipo 2, 3 y 4) es siempre
+    subconjunto de la imagen A (todas las células), ya que toda
+    célula agujereada también es una célula. Por eso, XOR(A, C) se
+    comporta como una resta de conjuntos válida (el mismo principio
+    aplicado en el punto 1 y el punto 2): deja únicamente los
+    píxeles que están en A pero no en C, es decir, las células sin
+    agujero — Tipo 1.
+
+    No hace falta ninguna reconstrucción para este punto: el
+    enunciado permite usarla, pero no la exige, y una sola operación
+    lógica alcanza para llegar al resultado.
+
+    Args:
+        imagen_a (numpy.ndarray): Imagen A (0/255), en polaridad
+            operativa (células en 255).
+        imagen_c (numpy.ndarray): Imagen C (0/255), en polaridad
+            operativa (células agujereadas en 255).
+
+    Returns:
+        tuple: Tupla (imagen_d, imagen_d_operativa). imagen_d es el
+        resultado final (0/255), invertido a polaridad visual (fondo
+        blanco, células negras), lista para el informe y para los
+        puntos siguientes. imagen_d_operativa es el mismo resultado
+        antes de invertir, en polaridad operativa, pensada para
+        mostrar el paso intermedio en el informe.
+    """
+    imagen_d_operativa = operacion_xor(imagen_a, imagen_c)
+    imagen_d = invertir_imagen(imagen_d_operativa)
+
+    return imagen_d, imagen_d_operativa
+
+
+def main():
+    """Función principal del programa."""
+
+    PREFIJO = "punto4"
+
+    # Obtener las imágenes A y C generadas por los puntos anteriores
+    imagen_a_original, imagen_c_original, imagen_a, imagen_c = obtener_imagenes_previas()
+
+    ruta_imagen_a_original = guardar_imagen(imagen_a_original, "imagen_a_original.png", prefijo=PREFIJO)
+    print(f"Imagen A (original) guardada en: {ruta_imagen_a_original}")
+
+    ruta_imagen_c_original = guardar_imagen(imagen_c_original, "imagen_c_original.png", prefijo=PREFIJO)
+    print(f"Imagen C (original) guardada en: {ruta_imagen_c_original}")
+
+    ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a_operativa.png", prefijo=PREFIJO)
+    print(f"Imagen A (operativa) guardada en: {ruta_imagen_a}")
+
+    ruta_imagen_c = guardar_imagen(imagen_c, "imagen_c_operativa.png", prefijo=PREFIJO)
+    print(f"Imagen C (operativa) guardada en: {ruta_imagen_c}")
+
+    # Generar la imagen D
+    imagen_d, imagen_d_operativa = generar_imagen_d(imagen_a, imagen_c)
+
+    ruta_imagen_d_operativa = guardar_imagen(imagen_d_operativa, "imagen_d_operativa.png", prefijo=PREFIJO)
+    print(f"Imagen D (operativa) guardada en: {ruta_imagen_d_operativa}")
+
+    ruta_imagen_d = guardar_imagen(imagen_d, NOMBRE_IMAGEN_D)
+    print(f"Imagen D guardada en: {ruta_imagen_d}")
+
+    # Graficar todas las imágenes generadas
+    lista_imagenes = [
+        imagen_a_original,
+        imagen_c_original,
+        imagen_a,
+        imagen_c,
+        imagen_d_operativa,
+        imagen_d,
+    ]
+    lista_titulos = [
+        "Imagen A (original)",
+        "Imagen C (original)",
+        "Imagen A (operativa, invertida)",
+        "Imagen C (operativa, invertida)",
+        "XOR(Imagen A, Imagen C)",
+        "Imagen D (resultado, invertida)",
+    ]
+
+    graficar_imagenes(
+        lista_imagenes,
+        lista_titulos,
+        prefijo=PREFIJO,
+        filas=2,
+        columnas=3,
+        titulo_general="Punto 4: Células no agujereadas (Tipo 1)",
+    )
+
+
+if __name__ == "__main__":
+    main()
