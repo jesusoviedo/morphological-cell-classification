@@ -6,6 +6,18 @@ Enunciado:
     reconstrucción, las operaciones lógicas (AND, OR, XOR, NAND, NOR) y
     la inversión de imagen, generar la imagen A sin pedazos ni células
     truncadas en los bordes de la imagen?
+
+Pasos realizados:
+    1. Se descarga y binariza la imagen base, en sus dos polaridades
+       (visual para mostrar, operativa para calcular).
+    2. Se construye el marcador de borde: la máscara restringida al
+       marco exterior de la imagen (AND contra un marco en 255).
+    3. Se reconstruye a partir de ese marcador contra la máscara
+       completa, recuperando los objetos que tocan el borde.
+    4. Se resta (XOR) esos objetos de la máscara, dejando solo las
+       células que no tocan el borde.
+    5. Se invierte el resultado para volver a la polaridad visual:
+       imagen A.
 """
 
 # Importar funciones auxiliares
