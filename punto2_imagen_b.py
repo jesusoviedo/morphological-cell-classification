@@ -7,6 +7,21 @@ Enunciado:
     (AND, OR, XOR, NAND, NOR) y la inversión de imagen, generar la
     imagen B de todos los agujeros de las células agujereadas (con
     citoplasma)?
+
+Pasos realizados:
+    1. Se carga la imagen A tal como se guardó (polaridad visual, que
+       coincide matemáticamente con el complemento de su polaridad
+       operativa).
+    2. Se construye el marcador de borde sobre esa misma imagen, que
+       ya cumple el rol de complemento.
+    3. Se reconstruye el fondo verdaderamente conectado al marco
+       exterior de la imagen.
+    4. Se invierte ese fondo reconstruido: se obtiene la imagen A con
+       los agujeros ya rellenados.
+    5. Se resta (XOR) la imagen A original (en polaridad operativa) de
+       la rellenada, quedando únicamente los agujeros.
+    6. Se invierte el resultado para volver a la polaridad visual:
+       imagen B.
 """
 
 # Importar funciones auxiliares
