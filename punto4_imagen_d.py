@@ -7,6 +7,19 @@ Enunciado:
     (AND, OR, XOR, NAND, NOR) y la inversión de imagen, generar la
     imagen D de todas las células no agujereadas (sin citoplasma) de
     Tipo 1?
+
+Pasos realizados:
+    1. Se cargan las imágenes A y C generadas por los puntos 1 y 3
+       (originales y en polaridad operativa).
+    2. Se resta (XOR) la imagen C de la imagen A: como C es siempre
+       subconjunto de A (toda célula agujereada es también una
+       célula), esto equivale a una resta de conjuntos válida.
+    3. Se invierte el resultado para volver a la polaridad visual:
+       imagen D.
+
+    No se usa reconstrucción morfológica en este punto: el enunciado
+    la permite, pero no la exige, y una sola operación lógica alcanza
+    para llegar al resultado.
 """
 
 # Importar funciones auxiliares
