@@ -7,6 +7,23 @@ Enunciado:
     (AND, OR, XOR, NAND, NOR) y la inversión de imagen, generar la
     imagen C de todas las células agujereadas (con citoplasma) de
     Tipo 2, Tipo 3 y Tipo 4?
+
+Pasos realizados:
+    1. Se cargan las imágenes A y B generadas por los puntos 1 y 2
+       (originales y en polaridad operativa).
+    2. Se rellenan los agujeros de la imagen A (misma técnica del
+       punto 2), obteniendo imagen_rellena.
+    3. Se reconstruye usando la imagen B como marcador contra
+       imagen_rellena como máscara — acá sí el marcador es
+       subconjunto estricto de la máscara, como exige la
+       reconstrucción morfológica, ya que donde B tiene el agujero
+       marcado, la imagen rellena también vale 255. El resultado es
+       la silueta completa de cada célula agujereada, rellena.
+    4. Se hace AND contra la imagen A original para reabrir el
+       agujero real (operación lógica, sin restricción de
+       subconjunto).
+    5. Se invierte el resultado para volver a la polaridad visual:
+       imagen C.
 """
 
 # Importar funciones auxiliares
