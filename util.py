@@ -511,6 +511,33 @@ def crear_marcador_borde(imagen_binaria):
     return operacion_and(imagen_binaria, marco)
 
 
+def rellenar_agujeros(imagen):
+    """Rellena los agujeros internos de una imagen binaria.
+
+    Aplica la técnica de relleno de agujeros vista en clase: como la
+    polaridad visual de una imagen coincide matemáticamente con el
+    complemento de su polaridad operativa, se usa ese complemento
+    directamente como máscara para reconstruir el fondo verdaderamente
+    conectado al marco exterior de la imagen (dejando afuera los
+    agujeros internos, que no lo tocan), y se invierte el resultado
+    para obtener la imagen con los agujeros rellenados.
+
+    Args:
+        imagen (numpy.ndarray): Imagen binaria (0/255), en polaridad
+            operativa (objeto de interés en 255).
+
+    Returns:
+        numpy.ndarray: Imagen con los agujeros rellenados (0/255), en
+        la misma polaridad operativa que la entrada (objeto de
+        interés, incluidos los agujeros ya rellenados, en 255).
+    """
+    complemento = invertir_imagen(imagen)
+    marcador = crear_marcador_borde(complemento)
+    reconstruida_fondo = reconstruccion_morfologica(marcador, complemento)
+
+    return invertir_imagen(reconstruida_fondo)
+
+
 def crear_elemento_estructurante(forma="cruz", tamano=3):
     """Crea un elemento estructurante para operaciones morfológicas.
 
