@@ -9,8 +9,8 @@ Enunciado:
     Tipo 2, Tipo 3 y Tipo 4?
 
 Pasos realizados:
-    1. Se cargan las imágenes A y B generadas por los puntos 1 y 2
-       (originales y en polaridad operativa).
+    1. Se cargan las imágenes A y B generadas por los puntos 1 y 2,
+       directamente en polaridad operativa.
     2. Se rellenan los agujeros de la imagen A (misma técnica del
        punto 2), obteniendo imagen_rellena.
     3. Se reconstruye usando la imagen B como marcador contra
