@@ -75,6 +75,9 @@ Cada punto del enunciado se ejecuta como un script independiente:
 ```bash
 python punto1_imagen_a.py
 python punto2_imagen_b.py
+python punto3_imagen_c.py
+python punto4_imagen_d.py
+python punto5_imagen_e.py
 ```
 
 Los puntos deben ejecutarse **en orden**, ya que cada uno depende del
@@ -87,8 +90,8 @@ La imagen base (`5ab3_0Artificial.bmp`) se descarga automáticamente la
 primera vez que se ejecuta `punto1_imagen_a.py`; las ejecuciones siguientes
 reutilizan el archivo ya descargado en `img/`.
 
-*(Esta sección se va a seguir completando a medida que se agreguen los
-scripts de los puntos restantes.)*
+*(Los comandos de `punto6_imagen_f.py`, `punto7_imagen_g.py` y
+`punto8_diferenciacion.py` se agregan a medida que se resuelven.)*
 
 ## Autores
 
