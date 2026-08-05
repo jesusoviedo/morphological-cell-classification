@@ -114,13 +114,15 @@ def binarizar_imagen(imagen, umbral=127, valor_maximo=255, invertir_automatico=T
     Por defecto utiliza un umbral fijo de 127. Si se pasa umbral=None, el
     umbral se calcula automáticamente mediante el método de Otsu.
 
-    Si invertir_automatico es True, después de umbralizar se garantiza
-    que el objeto de interés (que se asume minoritario en cantidad de
-    píxeles frente al fondo) quede codificado en valor_maximo,
-    invirtiendo el resultado si fuera necesario. Esto es indispensable
-    en imágenes como la de este trabajo, donde las células son oscuras
-    sobre un fondo claro: al umbralizar con THRESH_BINARY, el fondo
-    (mayoritario) quedaría en valor_maximo si no se corrigiera.
+    Si invertir_automatico es True, se invierte el resultado de
+    THRESH_BINARY. Esto es necesario en imágenes como la de este
+    trabajo, donde las células son oscuras sobre un fondo claro: al
+    umbralizar con THRESH_BINARY, el fondo (y no las células) queda en
+    valor_maximo, así que hay que invertir para que el objeto de
+    interés quede codificado en valor_maximo. La decisión de invertir
+    o no queda a cargo de quien llama a la función, según la polaridad
+    conocida de la imagen de entrada — no se intenta detectar
+    automáticamente.
 
     Args:
         imagen (numpy.ndarray): Imagen en escala de grises a binarizar.
@@ -129,16 +131,13 @@ def binarizar_imagen(imagen, umbral=127, valor_maximo=255, invertir_automatico=T
             de Otsu. Por defecto es 127.
         valor_maximo (int, optional): Valor asignado a los píxeles que
             representan al objeto de interés. Por defecto es 255.
-        invertir_automatico (bool, optional): Si es True, corrige la
-            polaridad del resultado cuando el fondo queda codificado
-            como mayoría en valor_maximo. Si es False, se respeta el
-            resultado tal cual lo entrega THRESH_BINARY, sin corregir
+        invertir_automatico (bool, optional): Si es True, invierte el
+            resultado de THRESH_BINARY. Si es False, se respeta el
+            resultado tal cual lo entrega THRESH_BINARY, sin invertir
             nada. Por defecto es True.
 
     Returns:
-        numpy.ndarray: Imagen binaria resultante, con el objeto de
-        interés en valor_maximo y el fondo en 0 (si
-        invertir_automatico es True).
+        numpy.ndarray: Imagen binaria resultante.
     """
     if umbral is None:
         _, imagen_binaria = cv2.threshold(imagen, 
@@ -152,11 +151,7 @@ def binarizar_imagen(imagen, umbral=127, valor_maximo=255, invertir_automatico=T
                                           cv2.THRESH_BINARY)    
 
     if invertir_automatico:
-        cantidad_encendidos = np.count_nonzero(imagen_binaria)
-        cantidad_apagados = imagen_binaria.size - cantidad_encendidos
-
-        if cantidad_encendidos > cantidad_apagados:
-            imagen_binaria = invertir_imagen(imagen_binaria)
+        imagen_binaria = invertir_imagen(imagen_binaria)
 
     return imagen_binaria
 
@@ -175,10 +170,9 @@ def cargar_imagen_binaria(ruta_imagen, umbral=127, valor_maximo=255, invertir_au
             de Otsu. Por defecto es 127.
         valor_maximo (int, optional): Valor asignado a los píxeles que
             representan al objeto de interés. Por defecto es 255.
-        invertir_automatico (bool, optional): Si es True, corrige la
-            polaridad del resultado cuando el fondo queda codificado
-            como mayoría en valor_maximo. Si es False, se respeta el
-            resultado tal cual lo entrega THRESH_BINARY, sin corregir
+        invertir_automatico (bool, optional): Si es True, invierte el
+            resultado de THRESH_BINARY. Si es False, se respeta el
+            resultado tal cual lo entrega THRESH_BINARY, sin invertir
             nada. Por defecto es True.
 
     Returns:
