@@ -42,26 +42,20 @@ from util import graficar_imagenes
 def obtener_imagenes_previas():
     """Obtiene las imágenes A y B generadas por los puntos anteriores.
 
-    Carga "imagen_a.png" e "imagen_b.png" (los resultados canónicos de
-    los puntos 1 y 2) en sus dos polaridades: tal como quedaron
-    guardadas en disco (polaridad visual, invertir=False), útil para
-    mostrar en el informe de dónde se partió, y también invertidas a
-    polaridad operativa (invertir=True, el valor por defecto), que es
-    la que necesita la reconstrucción: en imagen_a, las células quedan
-    en 255; en imagen_b, los agujeros quedan en 255.
+    Carga "imagen_a.png" e "imagen_b.png" directamente en polaridad
+    operativa (invertir=True, el valor por defecto), que es la única
+    que necesita este punto: ni A ni B se usan en su polaridad visual
+    en ningún paso del cómputo.
 
     Returns:
-        tuple: Tupla (imagen_a_original, imagen_b_original, imagen_a,
-        imagen_b). Las dos primeras están en polaridad visual (tal
-        cual se guardaron); las dos últimas en polaridad operativa.
+        tuple: Tupla (imagen_a, imagen_b), ambas numpy.ndarray (0/255),
+        en polaridad operativa (células y agujeros, respectivamente,
+        en 255).
     """
-    imagen_a_original = cargar_imagen_resultado(NOMBRE_IMAGEN_A, invertir=False)
-    imagen_b_original = cargar_imagen_resultado(NOMBRE_IMAGEN_B, invertir=False)
-
     imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
     imagen_b = cargar_imagen_resultado(NOMBRE_IMAGEN_B)
 
-    return imagen_a_original, imagen_b_original, imagen_a, imagen_b
+    return imagen_a, imagen_b
 
 
 def generar_imagen_c(imagen_a, imagen_b):
@@ -119,19 +113,13 @@ def main():
     PREFIJO = "punto3"
 
     # Obtener las imágenes A y B generadas por los puntos anteriores
-    imagen_a_original, imagen_b_original, imagen_a, imagen_b = obtener_imagenes_previas()
+    imagen_a, imagen_b = obtener_imagenes_previas()
 
-    ruta_imagen_a_original = guardar_imagen(imagen_a_original, "imagen_a_original.png", prefijo=PREFIJO)
-    print(f"Imagen A (original) guardada en: {ruta_imagen_a_original}")
+    ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a_operativa.png", prefijo=PREFIJO)
+    print(f"Imagen A (operativa) guardada en: {ruta_imagen_a}")
 
-    ruta_imagen_b_original = guardar_imagen(imagen_b_original, "imagen_b_original.png", prefijo=PREFIJO)
-    print(f"Imagen B (original) guardada en: {ruta_imagen_b_original}")
-
-    ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a_mascara.png", prefijo=PREFIJO)
-    print(f"Imagen A (máscara) guardada en: {ruta_imagen_a}")
-
-    ruta_imagen_b = guardar_imagen(imagen_b, "imagen_b_marcador.png", prefijo=PREFIJO)
-    print(f"Imagen B (marcador) guardada en: {ruta_imagen_b}")
+    ruta_imagen_b = guardar_imagen(imagen_b, "imagen_b_operativa.png", prefijo=PREFIJO)
+    print(f"Imagen B (operativa) guardada en: {ruta_imagen_b}")
 
     # Generar la imagen C
     imagen_c, imagen_c_operativa, celulas_agujereadas_rellenas, imagen_rellena = generar_imagen_c(imagen_a, imagen_b)
@@ -150,8 +138,6 @@ def main():
 
     # Graficar todas las imágenes generadas
     lista_imagenes = [
-        imagen_a_original,
-        imagen_b_original,
         imagen_a,
         imagen_b,
         imagen_rellena,
@@ -160,14 +146,12 @@ def main():
         imagen_c,
     ]
     lista_titulos = [
-        "Imagen A (original)",
-        "Imagen B (original)",
-        "Imagen A (operativa, invertida)",
-        "Imagen B (marcador, operativa, invertida)",
-        "Imagen rellena (máscara, A sin agujeros)",
-        "Reconstrucción(Marcador, Máscara)",
-        "AND(Reconstrucción, Imagen A)",
-        "Imagen C (resultado, invertida)",
+        "Imagen A",
+        "Imagen B",
+        "Rellena",
+        "Reconstrucción",
+        "AND final",
+        "Imagen C",
     ]
 
     graficar_imagenes(
@@ -175,7 +159,7 @@ def main():
         lista_titulos,
         prefijo=PREFIJO,
         filas=2,
-        columnas=4,
+        columnas=3,
         titulo_general="Punto 3: Células agujereadas (Tipo 2, 3 y 4)",
     )
 
