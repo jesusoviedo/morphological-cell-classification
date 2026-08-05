@@ -9,8 +9,8 @@ Enunciado:
     Tipo 1?
 
 Pasos realizados:
-    1. Se cargan las imágenes A y C generadas por los puntos 1 y 3
-       (originales y en polaridad operativa).
+    1. Se cargan las imágenes A y C generadas por los puntos 1 y 3,
+       directamente en polaridad operativa.
     2. Se resta (XOR) la imagen C de la imagen A: como C es siempre
        subconjunto de A (toda célula agujereada es también una
        célula), esto equivale a una resta de conjuntos válida.
