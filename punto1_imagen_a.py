@@ -141,12 +141,12 @@ def main():
         imagen_con_operacion_xor, 
         imagen_a]
     lista_titulos = [
-        "Imagen Original (entrada)",
-        "Máscara (operativa, invertida)",
-        "Marcador (borde de la máscara)",
-        "Reconstrucción(Marcador, Máscara)",
-        "XOR(Máscara, Reconstrucción)",
-        "Imagen A (resultado, invertida)",
+        "Imagen Original",
+        "Máscara",
+        "Marcador",
+        "Reconstrucción",
+        "XOR",
+        "Imagen A",
     ]
 
     graficar_imagenes(lista_imagenes, 
