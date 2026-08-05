@@ -151,13 +151,13 @@ def main():
         imagen_b,
     ]
     lista_titulos = [
-        "Imagen A (entrada / máscara)",
-        "Marcador (borde de la máscara)",
-        "Reconstrucción(Marcador, Máscara)",
-        "Imagen rellena (Reconstrucción invertida)",
-        "Imagen A (operativa, invertida)",
-        "XOR(Imagen rellena, Imagen A operativa)",
-        "Imagen B (resultado, invertida)",
+        "Imagen A",
+        "Marcador",
+        "Reconstrucción",
+        "Rellena",
+        "Imagen A (operativa)",
+        "XOR",
+        "Imagen B",
     ]
 
     graficar_imagenes(
