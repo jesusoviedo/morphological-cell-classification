@@ -36,26 +36,19 @@ from util import graficar_imagenes
 def obtener_imagenes_previas():
     """Obtiene las imágenes A y C generadas por los puntos anteriores.
 
-    Carga "imagen_a.png" e "imagen_c.png" (los resultados canónicos de
-    los puntos 1 y 3) en sus dos polaridades: tal como quedaron
-    guardadas en disco (polaridad visual, invertir=False), útil para
-    mostrar en el informe de dónde se partió, y también invertidas a
-    polaridad operativa (invertir=True, el valor por defecto), que es
-    la que necesita la operación lógica: en ambas, las células quedan
-    en 255.
+    Carga "imagen_a.png" e "imagen_c.png" directamente en polaridad
+    operativa (invertir=True, el valor por defecto), que es la única
+    que necesita este punto: ni A ni C se usan en su polaridad visual
+    en ningún paso del cómputo.
 
     Returns:
-        tuple: Tupla (imagen_a_original, imagen_c_original, imagen_a,
-        imagen_c). Las dos primeras están en polaridad visual (tal
-        cual se guardaron); las dos últimas en polaridad operativa.
+        tuple: Tupla (imagen_a, imagen_c), ambas numpy.ndarray (0/255),
+        en polaridad operativa (células en 255).
     """
-    imagen_a_original = cargar_imagen_resultado(NOMBRE_IMAGEN_A, invertir=False)
-    imagen_c_original = cargar_imagen_resultado(NOMBRE_IMAGEN_C, invertir=False)
-
     imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
     imagen_c = cargar_imagen_resultado(NOMBRE_IMAGEN_C)
 
-    return imagen_a_original, imagen_c_original, imagen_a, imagen_c
+    return imagen_a, imagen_c
 
 
 def generar_imagen_d(imagen_a, imagen_c):
@@ -99,13 +92,7 @@ def main():
     PREFIJO = "punto4"
 
     # Obtener las imágenes A y C generadas por los puntos anteriores
-    imagen_a_original, imagen_c_original, imagen_a, imagen_c = obtener_imagenes_previas()
-
-    ruta_imagen_a_original = guardar_imagen(imagen_a_original, "imagen_a_original.png", prefijo=PREFIJO)
-    print(f"Imagen A (original) guardada en: {ruta_imagen_a_original}")
-
-    ruta_imagen_c_original = guardar_imagen(imagen_c_original, "imagen_c_original.png", prefijo=PREFIJO)
-    print(f"Imagen C (original) guardada en: {ruta_imagen_c_original}")
+    imagen_a, imagen_c = obtener_imagenes_previas()
 
     ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a_operativa.png", prefijo=PREFIJO)
     print(f"Imagen A (operativa) guardada en: {ruta_imagen_a}")
@@ -124,28 +111,24 @@ def main():
 
     # Graficar todas las imágenes generadas
     lista_imagenes = [
-        imagen_a_original,
-        imagen_c_original,
         imagen_a,
         imagen_c,
         imagen_d_operativa,
         imagen_d,
     ]
     lista_titulos = [
-        "Imagen A (original)",
-        "Imagen C (original)",
-        "Imagen A (operativa, invertida)",
-        "Imagen C (operativa, invertida)",
-        "XOR(Imagen A, Imagen C)",
-        "Imagen D (resultado, invertida)",
+        "Imagen A",
+        "Imagen C",
+        "XOR final",
+        "Imagen D",
     ]
 
     graficar_imagenes(
         lista_imagenes,
         lista_titulos,
         prefijo=PREFIJO,
-        filas=2,
-        columnas=3,
+        filas=1,
+        columnas=4,
         titulo_general="Punto 4: Células no agujereadas (Tipo 1)",
     )
 
