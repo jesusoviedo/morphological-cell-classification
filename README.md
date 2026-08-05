@@ -54,7 +54,9 @@ morphological-cell-classification/
 ├── punto3_imagen_c.py    # células agujereadas Tipo 2, 3 y 4
 ├── punto4_imagen_d.py    # células Tipo 1 sin citoplasma
 ├── punto5_imagen_e.py    # núcleos sueltos Tipo 4
-├── punto6_imagen_f.py    # células Tipo 4 completas (dilatación/erosión permitida)
+├── punto6_imagen_f.py    # células Tipo 4 completas (dilatación/erosión
+│                         #   permitidas por el enunciado, pero resuelto
+│                         #   solo con reconstrucción y operaciones lógicas)
 ├── punto7_imagen_g.py    # células Tipo 2 y Tipo 3
 └── punto8_diferenciacion.py  # diferenciación entre Tipo 2 y Tipo 3
 ```
@@ -78,6 +80,7 @@ python punto2_imagen_b.py
 python punto3_imagen_c.py
 python punto4_imagen_d.py
 python punto5_imagen_e.py
+python punto6_imagen_f.py
 ```
 
 Los puntos deben ejecutarse **en orden**, ya que cada uno depende del
@@ -90,8 +93,8 @@ La imagen base (`5ab3_0Artificial.bmp`) se descarga automáticamente la
 primera vez que se ejecuta `punto1_imagen_a.py`; las ejecuciones siguientes
 reutilizan el archivo ya descargado en `img/`.
 
-*(Los comandos de `punto6_imagen_f.py`, `punto7_imagen_g.py` y
-`punto8_diferenciacion.py` se agregan a medida que se resuelven.)*
+*(Los comandos de `punto7_imagen_g.py` y `punto8_diferenciacion.py` se
+agregan a medida que se resuelven.)*
 
 ## Autores
 
