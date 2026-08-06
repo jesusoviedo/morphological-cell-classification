@@ -36,7 +36,7 @@ OPERACION_NOR = "nor"
 # Constantes para la forma del elemento estructurante
 FORMA_CRUZ = "cruz"
 FORMA_RECTANGULO = "rectangulo"
-FORMA_ELIPSE = "elipse"
+FORMA_CIRCULO = "circulo"
 
 def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN, carpeta=CARPETA_IMG):
     """Descarga un archivo desde Google Drive dado su ID.
@@ -464,7 +464,7 @@ def reconstruccion_morfologica(marcador, mascara):
     return (reconstruida * 255).astype(np.uint8)
 
 
-def erosion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3):
+def erosion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3, radio=None):
     """Aplica erosión binaria tradicional a una imagen.
 
     A diferencia de la reconstrucción morfológica, la erosión no
@@ -491,21 +491,26 @@ def erosion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3):
         imagen (numpy.ndarray): Imagen binaria (0/255) a erosionar.
         forma (str, optional): Forma del elemento estructurante — una
             de las constantes FORMA_CRUZ, FORMA_RECTANGULO o
-            FORMA_ELIPSE. Por defecto es FORMA_RECTANGULO.
+            FORMA_CIRCULO. Por defecto es FORMA_RECTANGULO.
         tamano_elemento (int, optional): Lado del elemento
             estructurante (por ejemplo, 3 para un elemento de 3x3).
-            Por defecto es 3.
+            Se ignora si se especifica radio. Por defecto es 3.
+        radio (int, optional): Si se especifica, el tamaño del
+            elemento se calcula como 2*radio + 1 (mismo criterio que
+            el material de la cátedra, útil junto con
+            forma=FORMA_CIRCULO para un disco de radio r). Por defecto
+            es None.
 
     Returns:
         numpy.ndarray: Imagen erosionada (0/255), subconjunto de la
         imagen de entrada.
     """
-    elemento_estructurante = crear_elemento_estructurante(forma, tamano_elemento)
+    elemento_estructurante = crear_elemento_estructurante(forma, tamano_elemento, radio)
 
     return cv2.erode(imagen, elemento_estructurante)
 
 
-def dilatacion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3):
+def dilatacion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3, radio=None):
     """Aplica dilatación binaria tradicional a una imagen.
 
     A diferencia de la reconstrucción morfológica, la dilatación no
@@ -522,16 +527,21 @@ def dilatacion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3):
         imagen (numpy.ndarray): Imagen binaria (0/255) a dilatar.
         forma (str, optional): Forma del elemento estructurante — una
             de las constantes FORMA_CRUZ, FORMA_RECTANGULO o
-            FORMA_ELIPSE. Por defecto es FORMA_RECTANGULO.
+            FORMA_CIRCULO. Por defecto es FORMA_RECTANGULO.
         tamano_elemento (int, optional): Lado del elemento
             estructurante (por ejemplo, 3 para un elemento de 3x3).
-            Por defecto es 3.
+            Se ignora si se especifica radio. Por defecto es 3.
+        radio (int, optional): Si se especifica, el tamaño del
+            elemento se calcula como 2*radio + 1 (mismo criterio que
+            el material de la cátedra, útil junto con
+            forma=FORMA_CIRCULO para un disco de radio r). Por defecto
+            es None.
 
     Returns:
         numpy.ndarray: Imagen dilatada (0/255), superconjunto de la
         imagen de entrada.
     """
-    elemento_estructurante = crear_elemento_estructurante(forma, tamano_elemento)
+    elemento_estructurante = crear_elemento_estructurante(forma, tamano_elemento, radio)
 
     return cv2.dilate(imagen, elemento_estructurante)
 
@@ -594,15 +604,25 @@ def rellenar_agujeros(imagen):
     return invertir_imagen(reconstruida_fondo)
 
 
-def crear_elemento_estructurante(forma=FORMA_CRUZ, tamano=3):
+def crear_elemento_estructurante(forma=FORMA_CRUZ, tamano=3, radio=None):
     """Crea un elemento estructurante para operaciones morfológicas.
+
+    Internamente usa cv2.MORPH_ELLIPSE para FORMA_CIRCULO — como el
+    kernel siempre es cuadrado (tamano, tamano), el resultado es
+    siempre un círculo, nunca una elipse con ejes distintos.
 
     Args:
         forma (str, optional): Forma del elemento estructurante. Debe
             ser una de las constantes FORMA_CRUZ, FORMA_RECTANGULO o
-            FORMA_ELIPSE. Por defecto es FORMA_CRUZ.
+            FORMA_CIRCULO. Por defecto es FORMA_CRUZ.
         tamano (int, optional): Tamaño (ancho y alto) del elemento
-            estructurante, en píxeles. Por defecto es 3.
+            estructurante, en píxeles. Se ignora si se especifica
+            radio. Por defecto es 3.
+        radio (int, optional): Si se especifica, el tamaño se calcula
+            como 2*radio + 1, el mismo criterio que usa el material de
+            la cátedra para elementos circulares (un disco de radio r
+            usa un kernel de (2r+1, 2r+1)). Si es None, se usa
+            directamente el parámetro tamano. Por defecto es None.
 
     Returns:
         numpy.ndarray: Elemento estructurante generado.
@@ -610,10 +630,13 @@ def crear_elemento_estructurante(forma=FORMA_CRUZ, tamano=3):
     Raises:
         ValueError: Si la forma indicada no es una de las soportadas.
     """
+    if radio is not None:
+        tamano = 2 * radio + 1
+
     formas_soportadas = {
         FORMA_CRUZ: cv2.MORPH_CROSS,
         FORMA_RECTANGULO: cv2.MORPH_RECT,
-        FORMA_ELIPSE: cv2.MORPH_ELLIPSE,
+        FORMA_CIRCULO: cv2.MORPH_ELLIPSE,
     }
 
     if forma not in formas_soportadas:
