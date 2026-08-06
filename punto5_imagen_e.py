@@ -32,16 +32,17 @@ Pasos realizados:
        imagen E.
 """
 
-# Importar funciones auxiliares
+# Importar constantes y funciones auxiliares
 from util import NOMBRE_IMAGEN_B
 from util import NOMBRE_IMAGEN_C
 from util import NOMBRE_IMAGEN_E
+from util import OPERACION_AND
+from util import OPERACION_XOR
 from util import cargar_imagen_resultado
 from util import crear_marcador_borde
 from util import guardar_imagen
 from util import invertir_imagen
-from util import operacion_and
-from util import operacion_xor
+from util import operacion_logica
 from util import reconstruccion_morfologica
 from util import graficar_imagenes
 
@@ -112,8 +113,8 @@ def generar_imagen_e(imagen_b, imagen_c):
 
     reconstruccion_exterior = reconstruccion_morfologica(marcador_borde, mascara_exterior)
 
-    cuerpos_celulares = operacion_and(reconstruccion_exterior, imagen_c)
-    imagen_e_operativa = operacion_xor(imagen_c, cuerpos_celulares)
+    cuerpos_celulares = operacion_logica(reconstruccion_exterior, imagen_c, OPERACION_AND)
+    imagen_e_operativa = operacion_logica(imagen_c, cuerpos_celulares, OPERACION_XOR)
     imagen_e = invertir_imagen(imagen_e_operativa)
 
     return (
