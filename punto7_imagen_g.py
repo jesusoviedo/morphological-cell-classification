@@ -43,26 +43,6 @@ from util import operacion_logica
 from util import graficar_imagenes
 
 
-def obtener_imagenes_previas():
-    """Obtiene las imágenes A, D y F generadas por los puntos 1, 4 y 6.
-
-    Carga "imagen_a.png", "imagen_d.png" e "imagen_f.png" directamente
-    en polaridad operativa (invertir=True, el valor por defecto), que
-    es la única que necesita este punto: ninguna se usa en su
-    polaridad visual en ningún paso del cómputo.
-
-    Returns:
-        tuple: Tupla (imagen_a, imagen_d, imagen_f), las tres
-        numpy.ndarray (0/255), en polaridad operativa (células, Tipo 1
-        y Tipo 4 completas, respectivamente, en 255).
-    """
-    imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
-    imagen_d = cargar_imagen_resultado(NOMBRE_IMAGEN_D)
-    imagen_f = cargar_imagen_resultado(NOMBRE_IMAGEN_F)
-
-    return imagen_a, imagen_d, imagen_f
-
-
 def generar_imagen_g(imagen_a, imagen_d, imagen_f):
     """Genera la imagen G: células Tipo 2 y Tipo 3.
 
@@ -107,7 +87,9 @@ def main():
     PREFIJO = "punto7"
 
     # Obtener las imágenes A, D y F generadas por los puntos anteriores
-    imagen_a, imagen_d, imagen_f = obtener_imagenes_previas()
+    imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
+    imagen_d = cargar_imagen_resultado(NOMBRE_IMAGEN_D)
+    imagen_f = cargar_imagen_resultado(NOMBRE_IMAGEN_F)
 
     ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a_operativa.png", prefijo=PREFIJO)
     print(f"Imagen A (operativa) guardada en: {ruta_imagen_a}")
