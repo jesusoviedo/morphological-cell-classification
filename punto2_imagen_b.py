@@ -24,11 +24,12 @@ Pasos realizados:
        imagen B.
 """
 
-# Importar funciones auxiliares
+# Importar constantes y funciones auxiliares
 from util import NOMBRE_IMAGEN_A
 from util import NOMBRE_IMAGEN_B
+from util import OPERACION_XOR
 from util import cargar_imagen_resultado
-from util import operacion_xor
+from util import operacion_logica
 from util import guardar_imagen
 from util import invertir_imagen
 from util import reconstruccion_morfologica
@@ -102,7 +103,7 @@ def generar_imagen_b(imagen_a):
     # imagen_a llega en polaridad visual; para el XOR final se necesita
     # en polaridad operativa (células en 255), igual que imagen_rellena.
     imagen_a_operativa = invertir_imagen(imagen_a)
-    imagen_agujeros_operativa = operacion_xor(imagen_rellena, imagen_a_operativa)
+    imagen_agujeros_operativa = operacion_logica(imagen_rellena, imagen_a_operativa, OPERACION_XOR)
 
     imagen_b = invertir_imagen(imagen_agujeros_operativa)
 
