@@ -26,14 +26,15 @@ Pasos realizados:
        imagen C.
 """
 
-# Importar funciones auxiliares
+# Importar constantes y funciones auxiliares
 from util import NOMBRE_IMAGEN_A
 from util import NOMBRE_IMAGEN_B
 from util import NOMBRE_IMAGEN_C
+from util import OPERACION_AND
 from util import cargar_imagen_resultado
 from util import guardar_imagen
 from util import invertir_imagen
-from util import operacion_and
+from util import operacion_logica
 from util import reconstruccion_morfologica
 from util import rellenar_agujeros
 from util import graficar_imagenes
@@ -101,7 +102,7 @@ def generar_imagen_c(imagen_a, imagen_b):
     imagen_rellena = rellenar_agujeros(imagen_a)
     celulas_agujereadas_rellenas = reconstruccion_morfologica(imagen_b, imagen_rellena)
 
-    imagen_c_operativa = operacion_and(celulas_agujereadas_rellenas, imagen_a)
+    imagen_c_operativa = operacion_logica(celulas_agujereadas_rellenas, imagen_a, OPERACION_AND)
     imagen_c = invertir_imagen(imagen_c_operativa)
 
     return imagen_c, imagen_c_operativa, celulas_agujereadas_rellenas, imagen_rellena
