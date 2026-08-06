@@ -70,7 +70,8 @@ morphological-cell-classification/
 ├── punto5_imagen_e.py    # núcleos sueltos Tipo 4
 ├── punto6_imagen_f.py    # células Tipo 4 completas
 ├── punto7_imagen_g.py    # células Tipo 2 y Tipo 3
-└── punto8_diferenciacion.py  # diferenciación entre Tipo 2 y Tipo 3 (parametrizable)
+├── punto8_diferenciacion.py  # diferenciación entre Tipo 2 y Tipo 3 (parametrizable)
+└── ejecutar_todos_los_puntos.py  # corre los 8 puntos en orden, en un solo comando
 ```
 
 Los resultados que se encadenan entre puntos (`imagen_a.png`, `imagen_b.png`,
@@ -81,7 +82,27 @@ todas sueltas.
 
 ## Uso
 
-Cada punto del enunciado se ejecuta como un script independiente:
+### Todo en uno
+
+La forma más simple de correr el trabajo completo es con
+`ejecutar_todos_los_puntos.py`, que corre los 8 puntos en orden, uno
+por uno, imprimiendo en la consola cuál se está ejecutando en cada
+momento:
+
+```bash
+python ejecutar_todos_los_puntos.py
+```
+
+Si algún punto termina con error, la ejecución **se corta ahí mismo**
+— los puntos siguientes no se llegan a correr, ya que dependerían de
+un resultado que no se generó. El mensaje de error del punto que
+falló se muestra en la consola tal cual, seguido de un aviso indicando
+en qué punto se cortó la cadena.
+
+### Punto por punto
+
+También se puede ejecutar cada punto del enunciado como un script
+independiente:
 
 ```bash
 python punto1_imagen_a.py
