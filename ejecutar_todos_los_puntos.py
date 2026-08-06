@@ -4,8 +4,7 @@
 Corre cada punto (1 a 8) como un proceso independiente, en el mismo
 orden en que se ejecutarían a mano (cada uno depende del resultado
 canónico guardado por el anterior). Si un punto termina con error, se
-corta la cadena ahí mismo -- no tiene sentido seguir con el siguiente
-si el que le da de comer no llegó a generar su resultado.
+corta la cadena ahí mismo.
 """
 
 import subprocess
