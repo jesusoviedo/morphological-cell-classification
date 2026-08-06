@@ -456,6 +456,75 @@ def reconstruccion_morfologica(marcador, mascara):
     return (reconstruida * 255).astype(np.uint8)
 
 
+def erosion_binaria(imagen, tamano_elemento=3):
+    """Aplica erosión binaria tradicional a una imagen.
+
+    A diferencia de la reconstrucción morfológica, la erosión no
+    respeta ninguna máscara ni depende de que exista un camino
+    conectado entre regiones de la imagen — solo depende del elemento
+    estructurante deslizándose sobre la imagen. Un píxel sobrevive
+    únicamente si el elemento estructurante completo, centrado en ese
+    píxel, cabe enteramente dentro del objeto de interés.
+
+    El resultado siempre es subconjunto de la imagen de entrada: la
+    erosión nunca puede agregar píxeles, solo puede quitarlos. Por eso
+    es útil como base para construir un marcador válido de
+    reconstrucción sin tener que verificar la condición de subconjunto
+    aparte.
+
+    Usa cv2.erode con un elemento estructurante cuadrado, siguiendo el
+    mismo criterio que el material de la cátedra para este tipo de
+    operación (a diferencia de reconstruccion_morfologica, que sí usa
+    scipy.ndimage, confirmado también por la cátedra pero
+    específicamente para esa función).
+
+    Args:
+        imagen (numpy.ndarray): Imagen binaria (0/255) a erosionar.
+        tamano_elemento (int, optional): Lado del elemento
+            estructurante cuadrado (por ejemplo, 3 para un elemento de
+            3x3). Por defecto es 3.
+
+    Returns:
+        numpy.ndarray: Imagen erosionada (0/255), subconjunto de la
+        imagen de entrada.
+    """
+    elemento_estructurante = cv2.getStructuringElement(
+        cv2.MORPH_RECT, (tamano_elemento, tamano_elemento)
+    )
+
+    return cv2.erode(imagen, elemento_estructurante)
+
+
+def dilatacion_binaria(imagen, tamano_elemento=3):
+    """Aplica dilatación binaria tradicional a una imagen.
+
+    A diferencia de la reconstrucción morfológica, la dilatación no
+    respeta ninguna máscara — el objeto de interés crece libremente en
+    todas las direcciones donde el elemento estructurante lo alcance,
+    sin ningún límite que lo contenga. El resultado siempre es
+    superconjunto de la imagen de entrada.
+
+    Usa cv2.dilate con un elemento estructurante cuadrado, siguiendo
+    el mismo criterio que el material de la cátedra para este tipo de
+    operación.
+
+    Args:
+        imagen (numpy.ndarray): Imagen binaria (0/255) a dilatar.
+        tamano_elemento (int, optional): Lado del elemento
+            estructurante cuadrado (por ejemplo, 3 para un elemento de
+            3x3). Por defecto es 3.
+
+    Returns:
+        numpy.ndarray: Imagen dilatada (0/255), superconjunto de la
+        imagen de entrada.
+    """
+    elemento_estructurante = cv2.getStructuringElement(
+        cv2.MORPH_RECT, (tamano_elemento, tamano_elemento)
+    )
+
+    return cv2.dilate(imagen, elemento_estructurante)
+
+
 def crear_marcador_borde(imagen_binaria):
     """Construye un marcador restringido al marco exterior de la imagen.
 
