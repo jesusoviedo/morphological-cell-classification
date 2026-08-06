@@ -12,6 +12,10 @@ Trabajo desarrollado para la materia **Procesamiento Digital de Imágenes**,
 Facultad Politécnica - UNA, a partir de una imagen base con células en
 distintas fases (Tipo 1 a Tipo 4).
 
+> El enunciado completo del trabajo (las 8 preguntas del ejercitario, la
+> restricción de herramientas por punto, y los criterios de evaluación)
+> está en [`ENUNCIADO.md`](ENUNCIADO.md).
+
 ## Configuración del entorno
 
 El entorno se gestiona con **conda** y está definido en `environment.yml`.
@@ -43,6 +47,7 @@ morphological-cell-classification/
 ├── environment.yml       # definición del entorno conda
 ├── LICENSE               # MIT
 ├── README.md
+├── ENUNCIADO.md          # texto completo del trabajo final (las 8 preguntas)
 ├── util.py               # funciones compartidas (descarga, binarización, etc.)
 ├── img/                  # se genera automáticamente al ejecutar los puntos
 │   ├── 5ab3_0Artificial.bmp   # imagen base descargada
