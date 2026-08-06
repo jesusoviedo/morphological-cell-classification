@@ -40,25 +40,6 @@ from util import rellenar_agujeros
 from util import graficar_imagenes
 
 
-def obtener_imagenes_previas():
-    """Obtiene las imágenes A y B generadas por los puntos anteriores.
-
-    Carga "imagen_a.png" e "imagen_b.png" directamente en polaridad
-    operativa (invertir=True, el valor por defecto), que es la única
-    que necesita este punto: ni A ni B se usan en su polaridad visual
-    en ningún paso del cómputo.
-
-    Returns:
-        tuple: Tupla (imagen_a, imagen_b), ambas numpy.ndarray (0/255),
-        en polaridad operativa (células y agujeros, respectivamente,
-        en 255).
-    """
-    imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
-    imagen_b = cargar_imagen_resultado(NOMBRE_IMAGEN_B)
-
-    return imagen_a, imagen_b
-
-
 def generar_imagen_c(imagen_a, imagen_b):
     """Genera la imagen C: células agujereadas (Tipo 2, 3 y 4) completas.
 
@@ -114,7 +95,8 @@ def main():
     PREFIJO = "punto3"
 
     # Obtener las imágenes A y B generadas por los puntos anteriores
-    imagen_a, imagen_b = obtener_imagenes_previas()
+    imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
+    imagen_b = cargar_imagen_resultado(NOMBRE_IMAGEN_B)
 
     ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a_operativa.png", prefijo=PREFIJO)
     print(f"Imagen A (operativa) guardada en: {ruta_imagen_a}")
