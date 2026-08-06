@@ -81,6 +81,7 @@ python punto3_imagen_c.py
 python punto4_imagen_d.py
 python punto5_imagen_e.py
 python punto6_imagen_f.py
+python punto7_imagen_g.py
 ```
 
 Los puntos deben ejecutarse **en orden**, ya que cada uno depende del
@@ -93,8 +94,8 @@ La imagen base (`5ab3_0Artificial.bmp`) se descarga automáticamente la
 primera vez que se ejecuta `punto1_imagen_a.py`; las ejecuciones siguientes
 reutilizan el archivo ya descargado en `img/`.
 
-*(Los comandos de `punto7_imagen_g.py` y `punto8_diferenciacion.py` se
-agregan a medida que se resuelven.)*
+*(El comando de `punto8_diferenciacion.py` se agrega a medida que se
+resuelve.)*
 
 ## Autores
 
