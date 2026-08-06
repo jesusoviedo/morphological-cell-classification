@@ -74,11 +74,9 @@ def generar_imagen_g(imagen_a, imagen_d, imagen_f):
     así que el segundo XOR también resta, dejando únicamente Tipo 2 y
     Tipo 3.
 
-    Para volver a la polaridad visual, en vez de invertir directamente
-    (herramienta que el enunciado no lista para este punto), se usa
-    NAND(X, X): como AND(X, X) es siempre X, NAND(X, X) = NOT(X) da el
-    mismo resultado que invertir, pero usando exclusivamente una de
-    las operaciones lógicas permitidas.
+    Para volver a la polaridad visual, se usa NAND(X, X): como AND(X, X)
+    es siempre X, NAND(X, X) = NOT(X) da el mismo resultado que invertir,
+    pero usando exclusivamente una de las operaciones lógicas permitidas.
 
     Args:
         imagen_a (numpy.ndarray): Imagen A (0/255), en polaridad
