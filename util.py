@@ -26,12 +26,17 @@ NOMBRE_IMAGEN_E = "imagen_e.png"
 NOMBRE_IMAGEN_F = "imagen_f.png"
 NOMBRE_IMAGEN_G = "imagen_g.png"
 
-# Constantes para las operaciones lógicas, usadas con operacion_logica()
+# Constantes para las operaciones lógicas
 OPERACION_AND = "and"
 OPERACION_OR = "or"
 OPERACION_XOR = "xor"
 OPERACION_NAND = "nand"
 OPERACION_NOR = "nor"
+
+# Constantes para la forma del elemento estructurante
+FORMA_CRUZ = "cruz"
+FORMA_RECTANGULO = "rectangulo"
+FORMA_ELIPSE = "elipse"
 
 def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN, carpeta=CARPETA_IMG):
     """Descarga un archivo desde Google Drive dado su ID.
@@ -347,7 +352,10 @@ def graficar_imagenes(imagenes, titulos, prefijo, filas=1, columnas=None,
     if titulo_general is not None:
         figura.suptitle(titulo_general, fontsize=14)
 
-    # Ajusta automáticamente los espacios entre subplots y el título general
+    # rect deja un margen arriba para el título general (evita que se
+    # solape con los títulos de la primera fila); h_pad agrega aire
+    # extra entre filas (evita que el título de una fila se solape con
+    # la imagen de la fila anterior).
     plt.tight_layout(rect=[0, 0, 1, 0.94], h_pad=3.0)
 
     ruta_destino = os.path.join(carpeta, f"{prefijo}_comparacion.png")
@@ -456,7 +464,7 @@ def reconstruccion_morfologica(marcador, mascara):
     return (reconstruida * 255).astype(np.uint8)
 
 
-def erosion_binaria(imagen, tamano_elemento=3):
+def erosion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3):
     """Aplica erosión binaria tradicional a una imagen.
 
     A diferencia de la reconstrucción morfológica, la erosión no
@@ -472,30 +480,32 @@ def erosion_binaria(imagen, tamano_elemento=3):
     reconstrucción sin tener que verificar la condición de subconjunto
     aparte.
 
-    Usa cv2.erode con un elemento estructurante cuadrado, siguiendo el
-    mismo criterio que el material de la cátedra para este tipo de
-    operación (a diferencia de reconstruccion_morfologica, que sí usa
-    scipy.ndimage, confirmado también por la cátedra pero
-    específicamente para esa función).
+    Usa cv2.erode con un elemento estructurante creado por
+    crear_elemento_estructurante(), siguiendo el mismo criterio que el
+    material de la cátedra para este tipo de operación (a diferencia
+    de reconstruccion_morfologica, que sí usa scipy.ndimage,
+    confirmado también por la cátedra pero específicamente para esa
+    función).
 
     Args:
         imagen (numpy.ndarray): Imagen binaria (0/255) a erosionar.
+        forma (str, optional): Forma del elemento estructurante — una
+            de las constantes FORMA_CRUZ, FORMA_RECTANGULO o
+            FORMA_ELIPSE. Por defecto es FORMA_RECTANGULO.
         tamano_elemento (int, optional): Lado del elemento
-            estructurante cuadrado (por ejemplo, 3 para un elemento de
-            3x3). Por defecto es 3.
+            estructurante (por ejemplo, 3 para un elemento de 3x3).
+            Por defecto es 3.
 
     Returns:
         numpy.ndarray: Imagen erosionada (0/255), subconjunto de la
         imagen de entrada.
     """
-    elemento_estructurante = cv2.getStructuringElement(
-        cv2.MORPH_RECT, (tamano_elemento, tamano_elemento)
-    )
+    elemento_estructurante = crear_elemento_estructurante(forma, tamano_elemento)
 
     return cv2.erode(imagen, elemento_estructurante)
 
 
-def dilatacion_binaria(imagen, tamano_elemento=3):
+def dilatacion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3):
     """Aplica dilatación binaria tradicional a una imagen.
 
     A diferencia de la reconstrucción morfológica, la dilatación no
@@ -504,23 +514,24 @@ def dilatacion_binaria(imagen, tamano_elemento=3):
     sin ningún límite que lo contenga. El resultado siempre es
     superconjunto de la imagen de entrada.
 
-    Usa cv2.dilate con un elemento estructurante cuadrado, siguiendo
-    el mismo criterio que el material de la cátedra para este tipo de
-    operación.
+    Usa cv2.dilate con un elemento estructurante creado por
+    crear_elemento_estructurante(), siguiendo el mismo criterio que el
+    material de la cátedra para este tipo de operación.
 
     Args:
         imagen (numpy.ndarray): Imagen binaria (0/255) a dilatar.
+        forma (str, optional): Forma del elemento estructurante — una
+            de las constantes FORMA_CRUZ, FORMA_RECTANGULO o
+            FORMA_ELIPSE. Por defecto es FORMA_RECTANGULO.
         tamano_elemento (int, optional): Lado del elemento
-            estructurante cuadrado (por ejemplo, 3 para un elemento de
-            3x3). Por defecto es 3.
+            estructurante (por ejemplo, 3 para un elemento de 3x3).
+            Por defecto es 3.
 
     Returns:
         numpy.ndarray: Imagen dilatada (0/255), superconjunto de la
         imagen de entrada.
     """
-    elemento_estructurante = cv2.getStructuringElement(
-        cv2.MORPH_RECT, (tamano_elemento, tamano_elemento)
-    )
+    elemento_estructurante = crear_elemento_estructurante(forma, tamano_elemento)
 
     return cv2.dilate(imagen, elemento_estructurante)
 
@@ -583,13 +594,13 @@ def rellenar_agujeros(imagen):
     return invertir_imagen(reconstruida_fondo)
 
 
-def crear_elemento_estructurante(forma="cruz", tamano=3):
+def crear_elemento_estructurante(forma=FORMA_CRUZ, tamano=3):
     """Crea un elemento estructurante para operaciones morfológicas.
 
     Args:
         forma (str, optional): Forma del elemento estructurante. Debe
-            ser 'cruz', 'rectangulo' o 'elipse'. Por defecto es
-            'cruz'.
+            ser una de las constantes FORMA_CRUZ, FORMA_RECTANGULO o
+            FORMA_ELIPSE. Por defecto es FORMA_CRUZ.
         tamano (int, optional): Tamaño (ancho y alto) del elemento
             estructurante, en píxeles. Por defecto es 3.
 
@@ -600,9 +611,9 @@ def crear_elemento_estructurante(forma="cruz", tamano=3):
         ValueError: Si la forma indicada no es una de las soportadas.
     """
     formas_soportadas = {
-        "cruz": cv2.MORPH_CROSS,
-        "rectangulo": cv2.MORPH_RECT,
-        "elipse": cv2.MORPH_ELLIPSE,
+        FORMA_CRUZ: cv2.MORPH_CROSS,
+        FORMA_RECTANGULO: cv2.MORPH_RECT,
+        FORMA_ELIPSE: cv2.MORPH_ELLIPSE,
     }
 
     if forma not in formas_soportadas:
