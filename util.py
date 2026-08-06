@@ -453,13 +453,21 @@ def reconstruccion_morfologica(marcador, mascara):
 
     Raises:
         ValueError: Si las dimensiones del marcador y la máscara no
-            coinciden.
+            coinciden, o si el marcador no es subconjunto de la
+            máscara (condición exigida por la reconstrucción
+            morfológica).
     """
     if marcador.shape != mascara.shape:
         raise ValueError("Las dimensiones del marcador y la máscara deben ser iguales.")
 
     marcador_bool = marcador.astype(bool)
     mascara_bool = mascara.astype(bool)
+
+    if np.any(marcador_bool & np.logical_not(mascara_bool)):
+        raise ValueError(
+            "El marcador no es subconjunto de la máscara: hay píxeles "
+            "del marcador (en 255) que caen fuera de la máscara (en 0). "
+        )
 
     reconstruida = marcador_bool.copy()
 
