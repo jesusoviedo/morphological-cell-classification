@@ -47,25 +47,6 @@ from util import reconstruccion_morfologica
 from util import graficar_imagenes
 
 
-def obtener_imagenes_previas():
-    """Obtiene las imágenes B y C generadas por los puntos 2 y 3.
-
-    Carga "imagen_b.png" e "imagen_c.png" directamente en polaridad
-    operativa (invertir=True, el valor por defecto), que es la única
-    que necesita este punto: ni B ni C se usan en su polaridad visual
-    en ningún paso del cómputo.
-
-    Returns:
-        tuple: Tupla (imagen_b, imagen_c), ambas numpy.ndarray (0/255),
-        en polaridad operativa (agujeros y células, respectivamente,
-        en 255).
-    """
-    imagen_b = cargar_imagen_resultado(NOMBRE_IMAGEN_B)
-    imagen_c = cargar_imagen_resultado(NOMBRE_IMAGEN_C)
-
-    return imagen_b, imagen_c
-
-
 def generar_imagen_e(imagen_b, imagen_c):
     """Genera la imagen E: núcleos sueltos de las células Tipo 4.
 
@@ -133,7 +114,8 @@ def main():
     PREFIJO = "punto5"
 
     # Obtener las imágenes B y C generadas por los puntos 2 y 3
-    imagen_b, imagen_c = obtener_imagenes_previas()
+    imagen_b = cargar_imagen_resultado(NOMBRE_IMAGEN_B)
+    imagen_c = cargar_imagen_resultado(NOMBRE_IMAGEN_C)
 
     ruta_imagen_b = guardar_imagen(imagen_b, "imagen_b_operativa.png", prefijo=PREFIJO)
     print(f"Imagen B (operativa) guardada en: {ruta_imagen_b}")
