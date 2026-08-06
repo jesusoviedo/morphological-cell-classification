@@ -51,20 +51,6 @@ TIPO_CELULA_3 = 3
 RADIO_EROSION = 6
 
 
-def obtener_imagen_previa():
-    """Obtiene la imagen G generada por el punto 7.
-
-    Carga "imagen_g.png" directamente en polaridad operativa
-    (invertir=True, el valor por defecto), que es la única que
-    necesita este punto.
-
-    Returns:
-        numpy.ndarray: Imagen G (0/255), en polaridad operativa
-        (células Tipo 2 y Tipo 3 en 255).
-    """
-    return cargar_imagen_resultado(NOMBRE_IMAGEN_G)
-
-
 def generar_diferenciacion(imagen_g, tipo_celula):
     """Separa la imagen G en Tipo 2 o Tipo 3, según el parámetro.
 
@@ -129,7 +115,7 @@ def main(tipo_celula):
     prefijo = f"punto8_tipo{tipo_celula}"
 
     # Obtener la imagen G generada por el punto anterior
-    imagen_g = obtener_imagen_previa()
+    imagen_g = cargar_imagen_resultado(NOMBRE_IMAGEN_G)
 
     ruta_imagen_g = guardar_imagen(imagen_g, "imagen_g_operativa.png", prefijo=prefijo)
     print(f"Imagen G (operativa) guardada en: {ruta_imagen_g}")
