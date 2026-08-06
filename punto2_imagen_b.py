@@ -37,24 +37,6 @@ from util import crear_marcador_borde
 from util import graficar_imagenes
 
 
-def obtener_imagen_a():
-    """Obtiene la imagen A generada por el punto 1.
-
-    Carga "imagen_a.png" (el resultado canónico del punto 1) tal como
-    quedó guardada en disco, es decir, en polaridad visual (fondo
-    blanco, células negras). Esta misma imagen sirve tanto para
-    mostrarla en el informe como para usarse directamente como el
-    complemento de la imagen A en polaridad operativa, ya que ambas
-    coinciden matemáticamente (ver generar_imagen_b).
-
-    Returns:
-        numpy.ndarray: Imagen A (0/255), en polaridad visual.
-    """
-    imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A, invertir=False)
-
-    return imagen_a
-
-
 def generar_imagen_b(imagen_a):
     """Genera la imagen B: agujeros de las células con citoplasma.
 
@@ -79,8 +61,7 @@ def generar_imagen_b(imagen_a):
 
     Args:
         imagen_a (numpy.ndarray): Imagen A (0/255), en polaridad
-            visual (células en 0), tal como la devuelve
-            obtener_imagen_a().
+            visual (células en 0), tal como se guardó en el punto 1.
 
     Returns:
         tuple: Tupla (imagen_b, imagen_agujeros_operativa,
@@ -116,7 +97,7 @@ def main():
     PREFIJO = "punto2"
 
     # Obtener la imagen A generada por el punto 1
-    imagen_a = obtener_imagen_a()
+    imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A, invertir=False)
 
     ruta_imagen_a_entrada = guardar_imagen(imagen_a, "imagen_a_entrada.png", prefijo=PREFIJO)
     print(f"Imagen A de entrada guardada en: {ruta_imagen_a_entrada}")
