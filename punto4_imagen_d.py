@@ -22,14 +22,15 @@ Pasos realizados:
     para llegar al resultado.
 """
 
-# Importar funciones auxiliares
+# Importar constantes y funciones auxiliares
 from util import NOMBRE_IMAGEN_A
 from util import NOMBRE_IMAGEN_C
 from util import NOMBRE_IMAGEN_D
+from util import OPERACION_XOR
 from util import cargar_imagen_resultado
 from util import guardar_imagen
 from util import invertir_imagen
-from util import operacion_xor
+from util import operacion_logica
 from util import graficar_imagenes
 
 
@@ -80,7 +81,7 @@ def generar_imagen_d(imagen_a, imagen_c):
         antes de invertir, en polaridad operativa, pensada para
         mostrar el paso intermedio en el informe.
     """
-    imagen_d_operativa = operacion_xor(imagen_a, imagen_c)
+    imagen_d_operativa = operacion_logica(imagen_a, imagen_c, OPERACION_XOR)
     imagen_d = invertir_imagen(imagen_d_operativa)
 
     return imagen_d, imagen_d_operativa
