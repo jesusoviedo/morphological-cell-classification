@@ -345,9 +345,10 @@ def graficar_imagenes(imagenes, titulos, prefijo, filas=1, columnas=None,
         eje.axis("off")
 
     if titulo_general is not None:
-        figura.suptitle(titulo_general)
+        figura.suptitle(titulo_general, fontsize=14)
 
-    plt.tight_layout()
+    # Ajusta automáticamente los espacios entre subplots y el título general
+    plt.tight_layout(rect=[0, 0, 1, 0.94], h_pad=3.0)
 
     ruta_destino = os.path.join(carpeta, f"{prefijo}_comparacion.png")
     figura.savefig(ruta_destino)
