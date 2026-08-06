@@ -26,6 +26,13 @@ NOMBRE_IMAGEN_E = "imagen_e.png"
 NOMBRE_IMAGEN_F = "imagen_f.png"
 NOMBRE_IMAGEN_G = "imagen_g.png"
 
+# Constantes para las operaciones lógicas, usadas con operacion_logica()
+OPERACION_AND = "and"
+OPERACION_OR = "or"
+OPERACION_XOR = "xor"
+OPERACION_NAND = "nand"
+OPERACION_NOR = "nor"
+
 def descargar_imagen(id_archivo=ID_IMAGEN_BASE, nombre_destino=NOMBRE_IMAGEN, carpeta=CARPETA_IMG):
     """Descarga un archivo desde Google Drive dado su ID.
 
@@ -350,75 +357,41 @@ def graficar_imagenes(imagenes, titulos, prefijo, filas=1, columnas=None,
     return ruta_destino
 
 
-def operacion_and(imagen_a, imagen_b):
-    """Aplica la operación lógica AND entre dos imágenes binarias.
+def operacion_logica(imagen_a, imagen_b, operacion):
+    """Aplica una operación lógica entre dos imágenes binarias.
+
+    Centraliza las 5 operaciones lógicas del enunciado en una sola
+    función. El parámetro operacion se pasa siempre con una de las
+    constantes OPERACION_AND, OPERACION_OR, OPERACION_XOR,
+    OPERACION_NAND, OPERACION_NOR definidas en este mismo módulo, en
+    vez de escribir el texto suelto: así, un error de tipeo en el
+    nombre de la constante falla de inmediato con NameError al
+    llamarla, en vez de fallar en silencio con un string mal escrito.
 
     Args:
         imagen_a (numpy.ndarray): Primera imagen binaria.
         imagen_b (numpy.ndarray): Segunda imagen binaria.
+        operacion (str): Una de las constantes OPERACION_* definidas
+            en este módulo.
 
     Returns:
-        numpy.ndarray: Resultado de aplicar AND píxel a píxel.
+        numpy.ndarray: Resultado de aplicar la operación píxel a píxel.
+
+    Raises:
+        ValueError: Si operacion no es una de las 5 reconocidas.
     """
-    return cv2.bitwise_and(imagen_a, imagen_b)
-
-
-def operacion_or(imagen_a, imagen_b):
-    """Aplica la operación lógica OR entre dos imágenes binarias.
-
-    Args:
-        imagen_a (numpy.ndarray): Primera imagen binaria.
-        imagen_b (numpy.ndarray): Segunda imagen binaria.
-
-    Returns:
-        numpy.ndarray: Resultado de aplicar OR píxel a píxel.
-    """
-    return cv2.bitwise_or(imagen_a, imagen_b)
-
-
-def operacion_xor(imagen_a, imagen_b):
-    """Aplica la operación lógica XOR entre dos imágenes binarias.
-
-    Args:
-        imagen_a (numpy.ndarray): Primera imagen binaria.
-        imagen_b (numpy.ndarray): Segunda imagen binaria.
-
-    Returns:
-        numpy.ndarray: Resultado de aplicar XOR píxel a píxel.
-    """
-    return cv2.bitwise_xor(imagen_a, imagen_b)
-
-
-def operacion_nand(imagen_a, imagen_b):
-    """Aplica la operación lógica NAND entre dos imágenes binarias.
-
-    Equivale a invertir el resultado de aplicar AND entre ambas
-    imágenes.
-
-    Args:
-        imagen_a (numpy.ndarray): Primera imagen binaria.
-        imagen_b (numpy.ndarray): Segunda imagen binaria.
-
-    Returns:
-        numpy.ndarray: Resultado de aplicar NAND píxel a píxel.
-    """
-    return cv2.bitwise_not(cv2.bitwise_and(imagen_a, imagen_b))
-
-
-def operacion_nor(imagen_a, imagen_b):
-    """Aplica la operación lógica NOR entre dos imágenes binarias.
-
-    Equivale a invertir el resultado de aplicar OR entre ambas
-    imágenes.
-
-    Args:
-        imagen_a (numpy.ndarray): Primera imagen binaria.
-        imagen_b (numpy.ndarray): Segunda imagen binaria.
-
-    Returns:
-        numpy.ndarray: Resultado de aplicar NOR píxel a píxel.
-    """
-    return cv2.bitwise_not(cv2.bitwise_or(imagen_a, imagen_b))
+    if operacion == OPERACION_AND:
+        return cv2.bitwise_and(imagen_a, imagen_b)
+    elif operacion == OPERACION_OR:
+        return cv2.bitwise_or(imagen_a, imagen_b)
+    elif operacion == OPERACION_XOR:
+        return cv2.bitwise_xor(imagen_a, imagen_b)
+    elif operacion == OPERACION_NAND:
+        return cv2.bitwise_not(cv2.bitwise_and(imagen_a, imagen_b))
+    elif operacion == OPERACION_NOR:
+        return cv2.bitwise_not(cv2.bitwise_or(imagen_a, imagen_b))
+    else:
+        raise ValueError(f"Operación desconocida: {operacion!r}")
 
 
 def invertir_imagen(imagen):
@@ -510,7 +483,7 @@ def crear_marcador_borde(imagen_binaria):
     marco[:, 0] = 255
     marco[:, -1] = 255
 
-    return operacion_and(imagen_binaria, marco)
+    return operacion_logica(imagen_binaria, marco, OPERACION_AND)
 
 
 def rellenar_agujeros(imagen):
