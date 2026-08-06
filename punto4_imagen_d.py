@@ -34,24 +34,6 @@ from util import operacion_logica
 from util import graficar_imagenes
 
 
-def obtener_imagenes_previas():
-    """Obtiene las imágenes A y C generadas por los puntos anteriores.
-
-    Carga "imagen_a.png" e "imagen_c.png" directamente en polaridad
-    operativa (invertir=True, el valor por defecto), que es la única
-    que necesita este punto: ni A ni C se usan en su polaridad visual
-    en ningún paso del cómputo.
-
-    Returns:
-        tuple: Tupla (imagen_a, imagen_c), ambas numpy.ndarray (0/255),
-        en polaridad operativa (células en 255).
-    """
-    imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
-    imagen_c = cargar_imagen_resultado(NOMBRE_IMAGEN_C)
-
-    return imagen_a, imagen_c
-
-
 def generar_imagen_d(imagen_a, imagen_c):
     """Genera la imagen D: células no agujereadas (Tipo 1).
 
@@ -93,7 +75,8 @@ def main():
     PREFIJO = "punto4"
 
     # Obtener las imágenes A y C generadas por los puntos anteriores
-    imagen_a, imagen_c = obtener_imagenes_previas()
+    imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
+    imagen_c = cargar_imagen_resultado(NOMBRE_IMAGEN_C)
 
     ruta_imagen_a = guardar_imagen(imagen_a, "imagen_a_operativa.png", prefijo=PREFIJO)
     print(f"Imagen A (operativa) guardada en: {ruta_imagen_a}")
