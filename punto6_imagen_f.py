@@ -35,16 +35,17 @@ Pasos realizados:
     núcleo suelto con el anillo) sin necesidad de dilatar nada.
 """
 
-# Importar funciones auxiliares
+# Importar constantes y funciones auxiliares
 from util import NOMBRE_IMAGEN_B
 from util import NOMBRE_IMAGEN_C
 from util import NOMBRE_IMAGEN_E
 from util import NOMBRE_IMAGEN_F
+from util import OPERACION_AND
+from util import OPERACION_OR
 from util import cargar_imagen_resultado
 from util import guardar_imagen
 from util import invertir_imagen
-from util import operacion_and
-from util import operacion_or
+from util import operacion_logica
 from util import reconstruccion_morfologica
 from util import graficar_imagenes
 
@@ -108,10 +109,10 @@ def generar_imagen_f(imagen_b, imagen_c, imagen_e):
         Las otras dos son pasos intermedios, en polaridad operativa,
         pensadas para mostrar en el informe.
     """
-    imagen_or = operacion_or(imagen_b, imagen_c)
+    imagen_or = operacion_logica(imagen_b, imagen_c, OPERACION_OR)
     imagen_reconstruida = reconstruccion_morfologica(imagen_e, imagen_or)
 
-    imagen_f_operativa = operacion_and(imagen_reconstruida, imagen_c)
+    imagen_f_operativa = operacion_logica(imagen_reconstruida, imagen_c, OPERACION_AND)
     imagen_f = invertir_imagen(imagen_f_operativa)
 
     return imagen_f, imagen_f_operativa, imagen_reconstruida, imagen_or
