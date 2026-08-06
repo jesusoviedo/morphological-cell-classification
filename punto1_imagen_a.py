@@ -20,13 +20,13 @@ Pasos realizados:
        imagen A.
 """
 
-# Importar funciones auxiliares
+# Importar constantes y funciones auxiliares
 from util import NOMBRE_IMAGEN
 from util import NOMBRE_IMAGEN_A
+from util import OPERACION_XOR
 from util import descargar_imagen
 from util import cargar_imagen_binaria
-from util import operacion_and
-from util import operacion_xor
+from util import operacion_logica
 from util import guardar_imagen
 from util import invertir_imagen
 from util import reconstruccion_morfologica
@@ -95,7 +95,7 @@ def generar_imagen_a(imagen_mascara, imagen_marcador):
     """
 
     image_con_objeto_borde = reconstruccion_morfologica(imagen_marcador, imagen_mascara)
-    imagen_con_operacion_xor = operacion_xor(imagen_mascara, image_con_objeto_borde)
+    imagen_con_operacion_xor = operacion_logica(imagen_mascara, image_con_objeto_borde, OPERACION_XOR)
     imagen_a = invertir_imagen(imagen_con_operacion_xor)
     return imagen_a, imagen_con_operacion_xor, image_con_objeto_borde
 
