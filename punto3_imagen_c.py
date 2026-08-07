@@ -43,11 +43,12 @@ from util import graficar_imagenes
 def generar_imagen_c(imagen_a, imagen_b):
     """Genera la imagen C: células agujereadas (Tipo 2, 3 y 4) completas.
 
-    La consulta al profesor confirmó que el marcador debe ser
-    subconjunto estricto de la máscara, y que usar imagen_b
-    directamente contra imagen_a no es válido (en los píxeles del
-    agujero, imagen_b vale 255 e imagen_a vale 0 — son disjuntas ahí,
-    no hay superposición que "ajustar" con una intersección directa).
+    La reconstrucción morfológica exige que el marcador sea
+    subconjunto estricto de la máscara. Usar imagen_b directamente
+    contra imagen_a como máscara no cumple esa condición: en los
+    píxeles del agujero, imagen_b vale 255 e imagen_a vale 0 -- son
+    conjuntos disjuntos ahí, no solo distintos, y no hay superposición
+    que "ajustar" con una intersección directa.
 
     En cambio, se usa imagen_b como marcador contra imagen_rellena
     (la imagen A con los agujeros ya rellenados) como máscara: ahí sí
