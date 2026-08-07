@@ -8,9 +8,7 @@ Enunciado:
 
 Pasos realizados:
     1. Se cargan las imágenes A, D y F, directamente en polaridad
-       operativa. Nota: el enunciado original menciona la imagen E,
-       pero el profesor confirmó que es un error de tipeo — la
-       imagen correcta es F.
+       operativa.
     2. Se resta (XOR) la imagen D de la imagen A: como D (Tipo 1) es
        siempre subconjunto de A, el XOR se comporta como una resta de
        conjuntos, dejando todas las células agujereadas (Tipo 2, 3 y
