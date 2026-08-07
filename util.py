@@ -172,8 +172,8 @@ def cargar_imagen_binaria(ruta_imagen, umbral=127, valor_maximo=255, invertir_au
     """Carga una imagen desde disco y la convierte a binaria.
 
     Lee la imagen en escala de grises desde la ruta indicada y aplica
-    la binarización correspondiente, siguiendo el criterio de umbral
-    fijo empleado en el material de cátedra.
+    un umbral fijo -- elegido por el buen contraste entre células y
+    fondo en la imagen base, sin depender de un método adaptativo.
 
     Args:
         ruta_imagen (str): Ruta del archivo de imagen a cargar.
@@ -481,11 +481,11 @@ def erosion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3, radio=Non
     aparte.
 
     Usa cv2.erode con un elemento estructurante creado por
-    crear_elemento_estructurante(), siguiendo el mismo criterio que el
-    material de la cátedra para este tipo de operación (a diferencia
-    de reconstruccion_morfologica, que sí usa scipy.ndimage,
-    confirmado también por la cátedra pero específicamente para esa
-    función).
+    crear_elemento_estructurante() -- la función más directa de
+    OpenCV para este tipo de operación (a diferencia de
+    reconstruccion_morfologica, que usa scipy.ndimage para la
+    dilatación geodésica iterada, una operación de naturaleza
+    distinta).
 
     Args:
         imagen (numpy.ndarray): Imagen binaria (0/255) a erosionar.
@@ -496,10 +496,9 @@ def erosion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3, radio=Non
             estructurante (por ejemplo, 3 para un elemento de 3x3).
             Se ignora si se especifica radio. Por defecto es 3.
         radio (int, optional): Si se especifica, el tamaño del
-            elemento se calcula como 2*radio + 1 (mismo criterio que
-            el material de la cátedra, útil junto con
-            forma=FORMA_CIRCULO para un disco de radio r). Por defecto
-            es None.
+            elemento se calcula como 2*radio + 1 -- útil junto con
+            forma=FORMA_CIRCULO para generar directamente un disco
+            de radio r. Por defecto es None.
 
     Returns:
         numpy.ndarray: Imagen erosionada (0/255), subconjunto de la
@@ -520,8 +519,8 @@ def dilatacion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3, radio=
     superconjunto de la imagen de entrada.
 
     Usa cv2.dilate con un elemento estructurante creado por
-    crear_elemento_estructurante(), siguiendo el mismo criterio que el
-    material de la cátedra para este tipo de operación.
+    crear_elemento_estructurante() -- la función más directa de
+    OpenCV para este tipo de operación.
 
     Args:
         imagen (numpy.ndarray): Imagen binaria (0/255) a dilatar.
@@ -532,10 +531,9 @@ def dilatacion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3, radio=
             estructurante (por ejemplo, 3 para un elemento de 3x3).
             Se ignora si se especifica radio. Por defecto es 3.
         radio (int, optional): Si se especifica, el tamaño del
-            elemento se calcula como 2*radio + 1 (mismo criterio que
-            el material de la cátedra, útil junto con
-            forma=FORMA_CIRCULO para un disco de radio r). Por defecto
-            es None.
+            elemento se calcula como 2*radio + 1 -- útil junto con
+            forma=FORMA_CIRCULO para generar directamente un disco
+            de radio r. Por defecto es None.
 
     Returns:
         numpy.ndarray: Imagen dilatada (0/255), superconjunto de la
@@ -619,10 +617,10 @@ def crear_elemento_estructurante(forma=FORMA_CRUZ, tamano=3, radio=None):
             estructurante, en píxeles. Se ignora si se especifica
             radio. Por defecto es 3.
         radio (int, optional): Si se especifica, el tamaño se calcula
-            como 2*radio + 1, el mismo criterio que usa el material de
-            la cátedra para elementos circulares (un disco de radio r
-            usa un kernel de (2r+1, 2r+1)). Si es None, se usa
-            directamente el parámetro tamano. Por defecto es None.
+            como 2*radio + 1 -- un criterio estándar para elementos
+            circulares: un disco de radio r requiere un kernel de
+            (2r+1, 2r+1) para contenerlo por completo. Si es None, se
+            usa directamente el parámetro tamano. Por defecto es None.
 
     Returns:
         numpy.ndarray: Elemento estructurante generado.
