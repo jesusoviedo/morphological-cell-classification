@@ -34,35 +34,6 @@ from util import crear_marcador_borde
 from util import graficar_imagenes
 
 
-def obtener_imagen_base():
-    """Obtiene la imagen base del trabajo en sus dos polaridades.
-
-    Descarga la imagen base si todavía no existe localmente (la
-    verificación la hace internamente descargar_imagen), y luego la
-    carga en escala de grises, generando dos versiones binarizadas:
-
-    - imagen_original: mantiene la polaridad original de la imagen de
-      entrada (fondo blanco, células negras), sin invertir. Es la que
-      se usa para mostrar en el informe.
-    - imagen_mascara: invertida (células en 255, fondo en 0), lista
-      para usarse como máscara en las operaciones lógicas y la
-      reconstrucción morfológica del resto del pipeline.
-
-    Returns:
-        tuple: Tupla (imagen_original, imagen_mascara), ambas
-        numpy.ndarray (0/255).
-    """
-    print(f"Descargando imagen {NOMBRE_IMAGEN}...")
-    ruta_imagen = descargar_imagen()
-
-    imagen_original = cargar_imagen_binaria(ruta_imagen, invertir_automatico=False)
-    imagen_mascara = cargar_imagen_binaria(ruta_imagen)
-    
-    print(f"Imagen {NOMBRE_IMAGEN} descargada en: {ruta_imagen}")
-
-    return imagen_original, imagen_mascara
-
-
 def generar_imagen_a(imagen_mascara, imagen_marcador):
     """Genera la imagen A: células sin truncar en los bordes.
  
@@ -105,8 +76,11 @@ def main():
 
     PREFIJO = "punto1"
 
-    # Obtener la imagen original y la máscara
-    imagen_original, imagen_mascara = obtener_imagen_base()
+    # Descargar y binarizar la imagen base, en sus dos polaridades
+    ruta_imagen = descargar_imagen()
+    imagen_original = cargar_imagen_binaria(ruta_imagen, invertir_automatico=False)
+    imagen_mascara = cargar_imagen_binaria(ruta_imagen)
+    print(f"Imagen {NOMBRE_IMAGEN} descargada en: {ruta_imagen}")
 
     ruta_imagen_original = guardar_imagen(imagen_original, "imagen_original.png", prefijo=PREFIJO)
     print(f"Imagen original guardada en: {ruta_imagen_original}")
