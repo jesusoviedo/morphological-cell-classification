@@ -18,7 +18,7 @@ Pasos realizados:
     3. Se reconstruye usando E (los núcleos sueltos) como marcador
        contra esa unión como máscara. Como E es subconjunto de C (y
        por lo tanto de OR(B, C)), se cumple la condición de
-       subconjunto exigida por el profesor. El crecimiento alcanza
+       subconjunto que exige la reconstrucción morfológica. El crecimiento alcanza
        únicamente las células Tipo 4 (las que tienen un núcleo suelto
        que sirve de semilla); las Tipo 3 no tienen semilla en E, así
        que no se reconstruyen.
@@ -64,8 +64,8 @@ def generar_imagen_f(imagen_b, imagen_c, imagen_e):
     Como E es subconjunto de C (el núcleo es parte del material
     celular que C ya contiene) y C es a su vez subconjunto de
     OR(B, C), se cumple que E es subconjunto de la máscara usada en
-    la reconstrucción, respetando la condición exigida por el
-    profesor.
+    la reconstrucción, respetando la condición de subconjunto que
+    exige la reconstrucción morfológica.
 
     La reconstrucción, al arrancar desde cada núcleo suelto, solo
     alcanza las células Tipo 4 (las únicas con una semilla en E); las
