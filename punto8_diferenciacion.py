@@ -33,6 +33,8 @@ Pasos realizados:
 import argparse
 
 from util import NOMBRE_IMAGEN_G
+from util import NOMBRE_IMAGEN_TIPO_2
+from util import NOMBRE_IMAGEN_TIPO_3
 from util import FORMA_CIRCULO
 from util import OPERACION_XOR
 from util import cargar_imagen_resultado
@@ -46,6 +48,12 @@ from util import graficar_imagenes
 # Constantes para el parámetro tipo_celula
 TIPO_CELULA_2 = 2
 TIPO_CELULA_3 = 3
+
+# Nombre de archivo de salida según el tipo de célula solicitado
+NOMBRE_IMAGEN_TIPO = {
+    TIPO_CELULA_2: NOMBRE_IMAGEN_TIPO_2,
+    TIPO_CELULA_3: NOMBRE_IMAGEN_TIPO_3,
+}
 
 # Radio del elemento estructurante circular
 RADIO_EROSION = 6
@@ -134,7 +142,7 @@ def main(tipo_celula):
     ruta_resultado_operativa = guardar_imagen(imagen_resultado_operativa, "imagen_resultado_operativa.png", prefijo=prefijo)
     print(f"Resultado (operativa) guardado en: {ruta_resultado_operativa}")
 
-    ruta_resultado = guardar_imagen(imagen_resultado, f"imagen_tipo{tipo_celula}.png")
+    ruta_resultado = guardar_imagen(imagen_resultado, NOMBRE_IMAGEN_TIPO[tipo_celula])
     print(f"Imagen Tipo {tipo_celula} guardada en: {ruta_resultado}")
 
     # Graficar: Tipo 3 necesita un paso extra (el XOR) que Tipo 2 no
