@@ -40,24 +40,11 @@ from util import graficar_imagenes
 def generar_imagen_b(imagen_a):
     """Genera la imagen B: agujeros de las células con citoplasma.
 
-    Aplica la técnica de relleno de agujeros vista en clase. Como
-    imagen_a llega en polaridad visual (que coincide matemáticamente
-    con el complemento de la imagen A en polaridad operativa), se usa
-    directamente como máscara para reconstruir el fondo conectado al
-    borde: se construye un marcador restringido al marco exterior de
-    esa misma imagen, y se reconstruye a partir de él (lo que recupera
-    únicamente el fondo verdaderamente conectado al borde, dejando
-    afuera los agujeros internos, que no lo tocan). Se invierte el
-    resultado para obtener la imagen con los agujeros rellenados
-    (polaridad operativa). Para el XOR final, se necesita imagen_a en
-    esa misma polaridad operativa, así que se invierte una única vez
-    antes de restarla de la imagen rellena (válido porque la imagen
-    rellenada es siempre un superconjunto de la imagen A). Por último,
-    se invierte el resultado para dejar imagen_b en polaridad visual,
-    lista para el informe y para encadenar con el punto 3.
-
-    Las células de Tipo 1 (sin citoplasma) no tienen agujero, por lo
-    que nunca aportan píxeles al resultado.
+    Aplica la técnica de relleno de agujeros (ver Conceptos previos)
+    para obtener la imagen rellena, y resta (XOR) la imagen A original
+    para quedarse solo con los agujeros (ver los pasos marcados en el
+    código). Las células Tipo 1 nunca aportan píxeles al resultado, al
+    no tener agujero.
 
     Args:
         imagen_a (numpy.ndarray): Imagen A (0/255), en polaridad
@@ -75,17 +62,22 @@ def generar_imagen_b(imagen_a):
         demás son los pasos intermedios, en polaridad operativa,
         pensadas para mostrar en el informe.
     """
+    # Paso 2: construir el marcador de borde sobre imagen_a
     imagen_marcador_relleno = crear_marcador_borde(imagen_a)
+    # Paso 3: reconstruir el fondo conectado al marco exterior
     imagen_reconstruida_fondo = reconstruccion_morfologica(
         imagen_marcador_relleno, imagen_a
     )
+    # Paso 4: invertir para obtener la imagen con agujeros rellenados
     imagen_rellena = invertir_imagen(imagen_reconstruida_fondo)
 
     # imagen_a llega en polaridad visual; para el XOR final se necesita
     # en polaridad operativa (células en 255), igual que imagen_rellena.
     imagen_a_operativa = invertir_imagen(imagen_a)
+    # Paso 5: restar (XOR) la imagen A original de la rellenada
     imagen_agujeros_operativa = operacion_logica(imagen_rellena, imagen_a_operativa, OPERACION_XOR)
 
+    # Paso 6: invertir a polaridad visual
     imagen_b = invertir_imagen(imagen_agujeros_operativa)
 
     return imagen_b, imagen_agujeros_operativa, imagen_rellena, imagen_reconstruida_fondo, imagen_marcador_relleno, imagen_a_operativa
@@ -96,7 +88,7 @@ def main():
 
     PREFIJO = "punto2"
 
-    # Obtener la imagen A generada por el punto 1
+    # Paso 1: obtener la imagen A generada por el punto 1
     imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A, invertir=False)
 
     ruta_imagen_a_entrada = guardar_imagen(imagen_a, "imagen_a_entrada.png", prefijo=PREFIJO)
