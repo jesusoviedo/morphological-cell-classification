@@ -141,7 +141,7 @@ python punto8_diferenciacion.py --tipo_celula 3   # solo Tipo 3
 
 Una vez generados todos los resultados (puntos 1 a 8), `generar_resumen_pipeline.py`
 arma un único panel con la imagen base y los 9 resultados canónicos (A a
-G, más Tipo 2 y Tipo 3), pensado para el cierre del informe:
+G, más Tipo 2 y Tipo 3):
 
 ```bash
 python generar_resumen_pipeline.py
