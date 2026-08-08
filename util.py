@@ -25,6 +25,8 @@ NOMBRE_IMAGEN_D = "imagen_d.png"
 NOMBRE_IMAGEN_E = "imagen_e.png"
 NOMBRE_IMAGEN_F = "imagen_f.png"
 NOMBRE_IMAGEN_G = "imagen_g.png"
+NOMBRE_IMAGEN_TIPO_2 = "imagen_tipo2.png"
+NOMBRE_IMAGEN_TIPO_3 = "imagen_tipo3.png"
 
 # Constantes para las operaciones lógicas
 OPERACION_AND = "and"
