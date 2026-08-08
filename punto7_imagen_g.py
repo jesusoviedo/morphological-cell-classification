@@ -44,17 +44,11 @@ from util import graficar_imagenes
 def generar_imagen_g(imagen_a, imagen_d, imagen_f):
     """Genera la imagen G: células Tipo 2 y Tipo 3.
 
-    D es siempre subconjunto de A (toda célula Tipo 1 es una célula),
-    así que XOR(A, D) se comporta como una resta de conjuntos y da
-    exactamente la imagen C (células Tipo 2, 3 y 4), sin necesidad de
-    cargarla aparte. F es a su vez siempre subconjunto de ese
-    resultado (toda célula Tipo 4 completa es una célula agujereada),
-    así que el segundo XOR también resta, dejando únicamente Tipo 2 y
-    Tipo 3.
-
-    Para volver a la polaridad visual, se usa NAND(X, X): como AND(X, X)
-    es siempre X, NAND(X, X) = NOT(X) da el mismo resultado que invertir,
-    pero usando exclusivamente una de las operaciones lógicas permitidas.
+    Aplica dos veces la propiedad de XOR como resta (D subconjunto de
+    A, y luego F subconjunto del resultado) para aislar Tipo 2 y
+    Tipo 3, e invierte con NAND(X, X) = NOT(X) al no estar permitida
+    la inversión directa en este punto (ver los pasos marcados en el
+    código).
 
     Args:
         imagen_a (numpy.ndarray): Imagen A (0/255), en polaridad
@@ -72,8 +66,11 @@ def generar_imagen_g(imagen_a, imagen_d, imagen_f):
         celulas_agujereadas es el paso intermedio (equivalente a la
         imagen C), pensado para mostrar en el informe.
     """
+    # Paso 2: restar (XOR) D de A -- equivale a la imagen C
     celulas_agujereadas = operacion_logica(imagen_a, imagen_d, OPERACION_XOR)
+    # Paso 3: restar (XOR) F de ese resultado -- deja Tipo 2 y Tipo 3
     imagen_g_operativa = operacion_logica(celulas_agujereadas, imagen_f, OPERACION_XOR)
+    # Paso 4: invertir a polaridad visual usando NAND(X, X)
     imagen_g = operacion_logica(imagen_g_operativa, imagen_g_operativa, OPERACION_NAND)
 
     return imagen_g, imagen_g_operativa, celulas_agujereadas
@@ -84,7 +81,7 @@ def main():
 
     PREFIJO = "punto7"
 
-    # Obtener las imágenes A, D y F generadas por los puntos anteriores
+    # Paso 1: obtener las imágenes A, D y F generadas por los puntos anteriores
     imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
     imagen_d = cargar_imagen_resultado(NOMBRE_IMAGEN_D)
     imagen_f = cargar_imagen_resultado(NOMBRE_IMAGEN_F)

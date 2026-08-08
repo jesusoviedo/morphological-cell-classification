@@ -54,18 +54,11 @@ RADIO_EROSION = 6
 def generar_diferenciacion(imagen_g, tipo_celula):
     """Separa la imagen G en Tipo 2 o Tipo 3, según el parámetro.
 
-    Las células Tipo 2 (casi sólidas) sobreviven a una erosión que
-    elimina por completo el anillo fino de las células Tipo 3 (y su
-    núcleo, si también es más chico que el elemento estructurante).
-    Ese remanente, usado como marcador de una reconstrucción contra G,
-    siempre recupera las células Tipo 2 completas — es la base común
-    para llegar a cualquiera de los dos tipos:
-
-    - Si se pide Tipo 2, ese resultado ES la respuesta.
-    - Si se pide Tipo 3, se resta (XOR) ese resultado de G: como es
-      subconjunto de G (todo lo reconstruido viene de G), el XOR se
-      comporta como una resta de conjuntos y deja únicamente las
-      células que no tenían ningún remanente para reconstruirse.
+    Las células Tipo 2 sobreviven a la erosión; ese remanente,
+    reconstruido contra G, recupera las Tipo 2 completas -- la base
+    común para ambos tipos: es la respuesta directa para Tipo 2, y su
+    resta (XOR) contra G da Tipo 3 (ver los pasos marcados en el
+    código).
 
     Args:
         imagen_g (numpy.ndarray): Imagen G (0/255), en polaridad
@@ -92,14 +85,18 @@ def generar_diferenciacion(imagen_g, tipo_celula):
             f"se recibió: {tipo_celula!r}"
         )
 
+    # Paso 2: erosionar G con un elemento estructurante circular
     imagen_erosionada = erosion_binaria(imagen_g, forma=FORMA_CIRCULO, radio=RADIO_EROSION)
+    # Paso 3: reconstruir desde lo que sobrevive, contra G como máscara
     imagen_tipo2_operativa = reconstruccion_morfologica(imagen_erosionada, imagen_g)
 
     if tipo_celula == TIPO_CELULA_2:
         imagen_resultado_operativa = imagen_tipo2_operativa
     else:
+        # Paso 4: si se pide Tipo 3, restar (XOR) ese resultado de G
         imagen_resultado_operativa = operacion_logica(imagen_g, imagen_tipo2_operativa, OPERACION_XOR)
 
+    # Paso 5: invertir a polaridad visual
     imagen_resultado = invertir_imagen(imagen_resultado_operativa)
 
     return imagen_resultado, imagen_resultado_operativa, imagen_erosionada, imagen_tipo2_operativa
@@ -114,7 +111,7 @@ def main(tipo_celula):
     """
     prefijo = f"punto8_tipo{tipo_celula}"
 
-    # Obtener la imagen G generada por el punto anterior
+    # Paso 1: obtener la imagen G generada por el punto anterior
     imagen_g = cargar_imagen_resultado(NOMBRE_IMAGEN_G)
 
     ruta_imagen_g = guardar_imagen(imagen_g, "imagen_g_operativa.png", prefijo=prefijo)
