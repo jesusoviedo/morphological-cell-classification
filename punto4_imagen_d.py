@@ -37,17 +37,10 @@ from util import graficar_imagenes
 def generar_imagen_d(imagen_a, imagen_c):
     """Genera la imagen D: células no agujereadas (Tipo 1).
 
-    La imagen C (células agujereadas, Tipo 2, 3 y 4) es siempre
-    subconjunto de la imagen A (todas las células), ya que toda
-    célula agujereada también es una célula. Por eso, XOR(A, C) se
-    comporta como una resta de conjuntos válida (el mismo principio
-    aplicado en el punto 1 y el punto 2): deja únicamente los
-    píxeles que están en A pero no en C, es decir, las células sin
-    agujero — Tipo 1.
-
-    No hace falta ninguna reconstrucción para este punto: el
-    enunciado permite usarla, pero no la exige, y una sola operación
-    lógica alcanza para llegar al resultado.
+    Como C es siempre subconjunto de A, XOR(A, C) se comporta como una
+    resta de conjuntos (ver Conceptos previos), dejando únicamente las
+    células sin agujero. No hace falta reconstrucción: el enunciado la
+    permite, pero no la exige.
 
     Args:
         imagen_a (numpy.ndarray): Imagen A (0/255), en polaridad
@@ -63,7 +56,9 @@ def generar_imagen_d(imagen_a, imagen_c):
         antes de invertir, en polaridad operativa, pensada para
         mostrar el paso intermedio en el informe.
     """
+    # Paso 2: restar (XOR) la imagen C de la imagen A
     imagen_d_operativa = operacion_logica(imagen_a, imagen_c, OPERACION_XOR)
+    # Paso 3: invertir a polaridad visual
     imagen_d = invertir_imagen(imagen_d_operativa)
 
     return imagen_d, imagen_d_operativa
@@ -74,7 +69,7 @@ def main():
 
     PREFIJO = "punto4"
 
-    # Obtener las imágenes A y C generadas por los puntos anteriores
+    # Paso 1: obtener las imágenes A y C generadas por los puntos anteriores
     imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
     imagen_c = cargar_imagen_resultado(NOMBRE_IMAGEN_C)
 

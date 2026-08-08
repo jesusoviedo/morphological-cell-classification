@@ -48,18 +48,9 @@ def generar_imagen_c(imagen_a, imagen_b):
     contra imagen_a como máscara no cumple esa condición: en los
     píxeles del agujero, imagen_b vale 255 e imagen_a vale 0 -- son
     conjuntos disjuntos ahí, no solo distintos, y no hay superposición
-    que "ajustar" con una intersección directa.
-
-    En cambio, se usa imagen_b como marcador contra imagen_rellena
-    (la imagen A con los agujeros ya rellenados) como máscara: ahí sí
-    imagen_b es subconjunto literal de imagen_rellena, porque donde
-    imagen_b vale 255 (el agujero), imagen_rellena también vale 255
-    (ya fue rellenado). La reconstrucción recupera así, para cada
-    célula agujereada, su silueta completa rellena (sin distinguir
-    todavía el agujero real). El AND final contra imagen_a "reabre"
-    el agujero verdadero: es una operación lógica, no una
-    reconstrucción, así que no aplica ninguna restricción de
-    subconjunto en este paso.
+    que "ajustar" con una intersección directa. Por eso se reconstruye
+    contra imagen_rellena (ver los pasos marcados en el código), donde
+    sí se cumple la condición.
 
     Las células de Tipo 1 (sin agujero) nunca son alcanzadas por el
     marcador, por lo que no aparecen en el resultado.
@@ -81,10 +72,14 @@ def generar_imagen_c(imagen_a, imagen_b):
         ya rellenas antes del AND final), pensadas para mostrar en el
         informe.
     """
+    # Paso 2: rellenar los agujeros de la imagen A
     imagen_rellena = rellenar_agujeros(imagen_a)
+    # Paso 3: reconstruir usando B como marcador contra imagen_rellena
     celulas_agujereadas_rellenas = reconstruccion_morfologica(imagen_b, imagen_rellena)
 
+    # Paso 4: AND contra la imagen A original, reabriendo el agujero real
     imagen_c_operativa = operacion_logica(celulas_agujereadas_rellenas, imagen_a, OPERACION_AND)
+    # Paso 5: invertir a polaridad visual
     imagen_c = invertir_imagen(imagen_c_operativa)
 
     return imagen_c, imagen_c_operativa, celulas_agujereadas_rellenas, imagen_rellena
@@ -95,7 +90,7 @@ def main():
 
     PREFIJO = "punto3"
 
-    # Obtener las imágenes A y B generadas por los puntos anteriores
+    # Paso 1: obtener las imágenes A y B generadas por los puntos anteriores
     imagen_a = cargar_imagen_resultado(NOMBRE_IMAGEN_A)
     imagen_b = cargar_imagen_resultado(NOMBRE_IMAGEN_B)
 
