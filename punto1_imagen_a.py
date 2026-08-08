@@ -36,21 +36,18 @@ from util import graficar_imagenes
 
 def generar_imagen_a(imagen_mascara, imagen_marcador):
     """Genera la imagen A: células sin truncar en los bordes.
- 
-    Reconstruye a partir del marcador de borde los objetos que tocan
-    el borde de la imagen, y los elimina de la máscara mediante XOR
-    (válido porque la reconstrucción es siempre un subconjunto de la
-    máscara). El resultado se invierte antes de devolverlo, para que
-    imagen_a quede en la misma polaridad original que imagen_original
-    (fondo blanco, células negras), lista para el informe.
- 
+
+    Reconstruye los objetos que tocan el borde contra la máscara
+    completa, y los descarta con XOR (ver los pasos marcados en el
+    código).
+
     Args:
         imagen_mascara (numpy.ndarray): Imagen binaria (0/255), en
             polaridad invertida (células en 255), con todas las
             células, usada como máscara de la reconstrucción.
         imagen_marcador (numpy.ndarray): Marcador de borde (0/255), en
             la misma polaridad invertida.
- 
+
     Returns:
         tuple: Tupla (imagen_a, imagen_con_operacion_xor,
         image_con_objeto_borde).
@@ -65,8 +62,11 @@ def generar_imagen_a(imagen_mascara, imagen_marcador):
         informe.
     """
 
+    # Paso 3: reconstruir el marcador de borde contra la máscara completa
     image_con_objeto_borde = reconstruccion_morfologica(imagen_marcador, imagen_mascara)
+    # Paso 4: restar (XOR) los objetos de borde de la máscara
     imagen_con_operacion_xor = operacion_logica(imagen_mascara, image_con_objeto_borde, OPERACION_XOR)
+    # Paso 5: invertir a polaridad visual
     imagen_a = invertir_imagen(imagen_con_operacion_xor)
     return imagen_a, imagen_con_operacion_xor, image_con_objeto_borde
 
@@ -76,7 +76,7 @@ def main():
 
     PREFIJO = "punto1"
 
-    # Descargar y binarizar la imagen base, en sus dos polaridades
+    # Paso 1: descargar y binarizar la imagen base, en sus dos polaridades
     ruta_imagen = descargar_imagen()
     imagen_original = cargar_imagen_binaria(ruta_imagen, invertir_automatico=False)
     imagen_mascara = cargar_imagen_binaria(ruta_imagen)
@@ -88,7 +88,7 @@ def main():
     ruta_imagen_mascara = guardar_imagen(imagen_mascara, "imagen_mascara.png", prefijo=PREFIJO)
     print(f"Imagen máscara guardada en: {ruta_imagen_mascara}")
 
-    # Crear el marcador de borde a partir de la imagen máscara
+    # Paso 2: crear el marcador de borde a partir de la imagen máscara
     imagen_marcador = crear_marcador_borde(imagen_mascara)
 
     ruta_imagen_marcador = guardar_imagen(imagen_marcador, "imagen_marcador.png", prefijo=PREFIJO)
