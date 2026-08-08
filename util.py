@@ -126,15 +126,11 @@ def binarizar_imagen(imagen, umbral=127, valor_maximo=255, invertir_automatico=T
     Por defecto utiliza un umbral fijo de 127. Si se pasa umbral=None, el
     umbral se calcula automáticamente mediante el método de Otsu.
 
-    Si invertir_automatico es True, se invierte el resultado de
-    THRESH_BINARY. Esto es necesario en imágenes como la de este
-    trabajo, donde las células son oscuras sobre un fondo claro: al
-    umbralizar con THRESH_BINARY, el fondo (y no las células) queda en
-    valor_maximo, así que hay que invertir para que el objeto de
-    interés quede codificado en valor_maximo. La decisión de invertir
-    o no queda a cargo de quien llama a la función, según la polaridad
-    conocida de la imagen de entrada — no se intenta detectar
-    automáticamente.
+    Por defecto invierte el resultado de THRESH_BINARY, ya que en esta
+    imagen las células son oscuras sobre fondo claro y THRESH_BINARY
+    deja el fondo -- no las células -- en valor_maximo. La decisión de
+    invertir queda a cargo de quien llama, según la polaridad conocida
+    de la imagen de entrada -- no se intenta detectar automáticamente.
 
     Args:
         imagen (numpy.ndarray): Imagen en escala de grises a binarizar.
@@ -467,25 +463,11 @@ def reconstruccion_morfologica(marcador, mascara):
 def erosion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3, radio=None):
     """Aplica erosión binaria tradicional a una imagen.
 
-    A diferencia de la reconstrucción morfológica, la erosión no
-    respeta ninguna máscara ni depende de que exista un camino
-    conectado entre regiones de la imagen — solo depende del elemento
-    estructurante deslizándose sobre la imagen. Un píxel sobrevive
-    únicamente si el elemento estructurante completo, centrado en ese
-    píxel, cabe enteramente dentro del objeto de interés.
-
-    El resultado siempre es subconjunto de la imagen de entrada: la
-    erosión nunca puede agregar píxeles, solo puede quitarlos. Por eso
-    es útil como base para construir un marcador válido de
-    reconstrucción sin tener que verificar la condición de subconjunto
-    aparte.
-
-    Usa cv2.erode con un elemento estructurante creado por
-    crear_elemento_estructurante() -- la función más directa de
-    OpenCV para este tipo de operación (a diferencia de
+    El resultado siempre es subconjunto de la imagen de entrada, útil
+    para construir un marcador válido de reconstrucción sin verificar
+    la condición de subconjunto aparte. Usa cv2.erode (a diferencia de
     reconstruccion_morfologica, que usa scipy.ndimage para la
-    dilatación geodésica iterada, una operación de naturaleza
-    distinta).
+    dilatación geodésica iterada).
 
     Args:
         imagen (numpy.ndarray): Imagen binaria (0/255) a erosionar.
@@ -512,15 +494,10 @@ def erosion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3, radio=Non
 def dilatacion_binaria(imagen, forma=FORMA_RECTANGULO, tamano_elemento=3, radio=None):
     """Aplica dilatación binaria tradicional a una imagen.
 
-    A diferencia de la reconstrucción morfológica, la dilatación no
-    respeta ninguna máscara — el objeto de interés crece libremente en
-    todas las direcciones donde el elemento estructurante lo alcance,
-    sin ningún límite que lo contenga. El resultado siempre es
-    superconjunto de la imagen de entrada.
-
-    Usa cv2.dilate con un elemento estructurante creado por
-    crear_elemento_estructurante() -- la función más directa de
-    OpenCV para este tipo de operación.
+    A diferencia de la reconstrucción morfológica, no respeta ninguna
+    máscara: el resultado siempre es superconjunto de la imagen de
+    entrada. Usa cv2.dilate (la función más directa de OpenCV para
+    este tipo de operación).
 
     Args:
         imagen (numpy.ndarray): Imagen binaria (0/255) a dilatar.
@@ -578,13 +555,11 @@ def crear_marcador_borde(imagen_binaria):
 def rellenar_agujeros(imagen):
     """Rellena los agujeros internos de una imagen binaria.
 
-    Aplica la técnica de relleno de agujeros vista en clase: como la
-    polaridad visual de una imagen coincide matemáticamente con el
-    complemento de su polaridad operativa, se usa ese complemento
-    directamente como máscara para reconstruir el fondo verdaderamente
-    conectado al marco exterior de la imagen (dejando afuera los
-    agujeros internos, que no lo tocan), y se invierte el resultado
-    para obtener la imagen con los agujeros rellenados.
+    La polaridad visual de una imagen coincide matemáticamente con el
+    complemento de su polaridad operativa; se usa ese complemento como
+    máscara para reconstruir el fondo conectado al marco exterior
+    (dejando afuera los agujeros, que no lo tocan), y se invierte el
+    resultado para obtener la imagen con los agujeros rellenados.
 
     Args:
         imagen (numpy.ndarray): Imagen binaria (0/255), en polaridad
