@@ -50,29 +50,15 @@ from util import graficar_imagenes
 def generar_imagen_e(imagen_b, imagen_c):
     """Genera la imagen E: núcleos sueltos de las células Tipo 4.
 
-    La máscara exterior (fondo verdadero unido, por OR, con la propia
-    imagen C) es exactamente igual al complemento de la imagen B. Esto
-    se puede demostrar con la ley de De Morgan: llamando "hueco_real"
-    a lo que representa B (las zonas encerradas, no conectadas al
-    fondo verdadero) y "fondo_real" al fondo verdaderamente conectado
-    al borde:
-
-        mascara_exterior = fondo_real ∪ C
-                          = complemento(complemento(fondo_real) ∩ complemento(C))
-                          = complemento(hueco_real) [ya que
-                            complemento(fondo_real) ∩ complemento(C)
-                            es, por construcción, exactamente hueco_real]
-                          = complemento(B)
-
-    Por eso la máscara se obtiene directo con una inversión, sin
-    reconstruir nada. El marcador, en cambio, se arma con el mismo
-    patrón visual que crear_marcador_borde usa en los puntos 1 y 2:
-    blanco solo en el marco exterior de la imagen, negro en el resto.
-    No hace falta que el marcador ya cubra toda la forma del fondo
-    real — alcanza con que toque esa región conectada, ya que la
-    reconstrucción se encarga de expandirlo hasta ocupar el resto
-    (se verificó numéricamente que da idéntico resultado que partir
-    de un marcador más grande, con muchos menos píxeles de entrada).
+    La máscara exterior se obtiene invirtiendo directamente la imagen
+    B (B complemento), sin reconstruir nada para armarla. Lo que aísla
+    los núcleos sueltos no es una propiedad algebraica de ese
+    complemento, sino la conectividad: al crecer desde el marco
+    exterior, la reconstrucción alcanza el fondo, las células Tipo 1 y
+    la parte de cada célula agujereada conectada sin cruzar un
+    agujero -- nunca un núcleo suelto, que queda aislado (ver los
+    pasos marcados en el código, y el recuadro "Hallazgo" del informe
+    para el detalle completo).
 
     Args:
         imagen_b (numpy.ndarray): Imagen B (0/255), en polaridad
@@ -89,13 +75,19 @@ def generar_imagen_e(imagen_b, imagen_c):
         antes de invertir. Las demás son los pasos intermedios, en
         polaridad operativa, pensadas para mostrar en el informe.
     """
+    # Paso 2: obtener la máscara exterior como el complemento de B
     mascara_exterior = invertir_imagen(imagen_b)
+    # Paso 3: construir el marcador como el marco exterior de esa máscara
     marcador_borde = crear_marcador_borde(mascara_exterior)
 
+    # Paso 4: reconstruir el marcador contra la máscara exterior
     reconstruccion_exterior = reconstruccion_morfologica(marcador_borde, mascara_exterior)
 
+    # Paso 5: AND contra la imagen C, descartando el fondo exterior
     cuerpos_celulares = operacion_logica(reconstruccion_exterior, imagen_c, OPERACION_AND)
+    # Paso 6: restar (XOR) ese resultado de la imagen C
     imagen_e_operativa = operacion_logica(imagen_c, cuerpos_celulares, OPERACION_XOR)
+    # Paso 7: invertir a polaridad visual
     imagen_e = invertir_imagen(imagen_e_operativa)
 
     return (
@@ -113,7 +105,7 @@ def main():
 
     PREFIJO = "punto5"
 
-    # Obtener las imágenes B y C generadas por los puntos 2 y 3
+    # Paso 1: obtener las imágenes B y C generadas por los puntos 2 y 3
     imagen_b = cargar_imagen_resultado(NOMBRE_IMAGEN_B)
     imagen_c = cargar_imagen_resultado(NOMBRE_IMAGEN_C)
 

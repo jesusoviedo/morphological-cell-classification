@@ -53,24 +53,12 @@ from util import graficar_imagenes
 def generar_imagen_f(imagen_b, imagen_c, imagen_e):
     """Genera la imagen F: células Tipo 4 completas.
 
-    El núcleo suelto (imagen E) está desconectado del anillo dentro de
-    la imagen C — por eso no alcanza con reconstruir directo contra C
-    (el marcador nunca podría "cruzar" esa distancia). En cambio, se
-    une (OR) la imagen B (el hueco real que separaba núcleo y anillo)
-    con la imagen C: esa unión rellena exactamente el hueco,
-    reconectando núcleo y anillo en una sola región continua, sin
-    necesidad de dilatar nada.
-
-    Como E es subconjunto de C (el núcleo es parte del material
-    celular que C ya contiene) y C es a su vez subconjunto de
-    OR(B, C), se cumple que E es subconjunto de la máscara usada en
-    la reconstrucción, respetando la condición de subconjunto que
-    exige la reconstrucción morfológica.
-
-    La reconstrucción, al arrancar desde cada núcleo suelto, solo
-    alcanza las células Tipo 4 (las únicas con una semilla en E); las
-    células Tipo 3 (núcleo pegado, sin aportar a E) y Tipo 1 (sin
-    agujero, ausentes de B y C) quedan afuera del resultado.
+    El núcleo suelto (E) está desconectado del anillo dentro de C; se
+    une (OR) B con C para reconectarlos antes de reconstruir, sin
+    necesidad de dilatar nada (ver los pasos marcados en el código).
+    E es subconjunto de OR(B, C), cumpliendo la condición que exige la
+    reconstrucción. Solo las células Tipo 4 tienen semilla en E, así
+    que son las únicas alcanzadas.
 
     Args:
         imagen_b (numpy.ndarray): Imagen B (0/255), en polaridad
@@ -89,10 +77,14 @@ def generar_imagen_f(imagen_b, imagen_c, imagen_e):
         Las otras dos son pasos intermedios, en polaridad operativa,
         pensadas para mostrar en el informe.
     """
+    # Paso 2: unir (OR) B con C, reconectando núcleo y anillo
     imagen_or = operacion_logica(imagen_b, imagen_c, OPERACION_OR)
+    # Paso 3: reconstruir usando E como marcador contra esa unión
     imagen_reconstruida = reconstruccion_morfologica(imagen_e, imagen_or)
 
+    # Paso 4: AND contra la imagen C, reabriendo el hueco real
     imagen_f_operativa = operacion_logica(imagen_reconstruida, imagen_c, OPERACION_AND)
+    # Paso 5: invertir a polaridad visual
     imagen_f = invertir_imagen(imagen_f_operativa)
 
     return imagen_f, imagen_f_operativa, imagen_reconstruida, imagen_or
@@ -103,7 +95,7 @@ def main():
 
     PREFIJO = "punto6"
 
-    # Obtener las imágenes B, C y E generadas por los puntos anteriores
+    # Paso 1: obtener las imágenes B, C y E generadas por los puntos anteriores
     imagen_b = cargar_imagen_resultado(NOMBRE_IMAGEN_B)
     imagen_c = cargar_imagen_resultado(NOMBRE_IMAGEN_C)
     imagen_e = cargar_imagen_resultado(NOMBRE_IMAGEN_E)
