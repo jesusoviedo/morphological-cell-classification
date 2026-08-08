@@ -57,6 +57,7 @@ morphological-cell-classification/
 │   ├── imagen_tipo2.png       # resultado del punto 8 (Tipo 2) -- excepción,
 │   │                          #   no sigue la nomenclatura de letra
 │   ├── imagen_tipo3.png       # resultado del punto 8 (Tipo 3) -- ídem
+│   ├── resumen_comparacion.png  # panel de síntesis (base + A a G + Tipo2/3)
 │   ├── punto1/                # imágenes intermedias del punto 1 (máscara, marcador, etc.)
 │   ├── punto2/                # imágenes intermedias del punto 2
 │   ├── ...                    # una subcarpeta por punto (puntos 3 a 7)
@@ -71,7 +72,8 @@ morphological-cell-classification/
 ├── punto6_imagen_f.py    # células Tipo 4 completas
 ├── punto7_imagen_g.py    # células Tipo 2 y Tipo 3
 ├── punto8_diferenciacion.py  # diferenciación entre Tipo 2 y Tipo 3 (parametrizable)
-└── ejecutar_todos_los_puntos.py  # corre los 8 puntos en orden, en un solo comando
+├── ejecutar_todos_los_puntos.py  # corre los 8 puntos en orden, en un solo comando
+└── generar_resumen_pipeline.py   # panel resumen (imagen base + A a G + Tipo2/3)
 ```
 
 Los resultados que se encadenan entre puntos (`imagen_a.png`, `imagen_b.png`,
@@ -133,6 +135,16 @@ tipo. Sin el argumento, genera ambos:
 python punto8_diferenciacion.py                  # genera Tipo 2 y Tipo 3
 python punto8_diferenciacion.py --tipo_celula 2   # solo Tipo 2
 python punto8_diferenciacion.py --tipo_celula 3   # solo Tipo 3
+```
+
+### Panel resumen
+
+Una vez generados todos los resultados (puntos 1 a 8), `generar_resumen_pipeline.py`
+arma un único panel con la imagen base y los 9 resultados canónicos (A a
+G, más Tipo 2 y Tipo 3), pensado para el cierre del informe:
+
+```bash
+python generar_resumen_pipeline.py
 ```
 
 ## Autores
